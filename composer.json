@@ -1,0 +1,35 @@
+{
+    "name": "duyler/framework",
+    "type": "library",
+    "description": "Duyler framework",
+    "license": "MIT",
+    "keywords": [
+        "framework"
+    ],
+    "authors": [
+        {
+            "name": "Mikhail Ilinsky",
+            "email": "mail@milinsky.ru"
+        }
+    ],
+    "support": {
+        "docs": "https://duyler.org/docs/framework/"
+    },
+    "require": {
+        "php": "^8.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.0"
+    },
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "Duyler\\Framework\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Duyler\\Framework\\Test\\": ["tests/"]
+        }
+    }
+}
