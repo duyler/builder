@@ -11,9 +11,10 @@ use Duyler\Contract\PackageLoader\PackageLoaderInterface;
 use Duyler\DependencyInjection\ContainerBuilder;
 use Duyler\DependencyInjection\ContainerInterface;
 use Duyler\EventBus\BusBuilder;
+use Duyler\Framework\Facade\Service;
 use Duyler\Framework\Loader\LoaderCollection;
 use Duyler\Framework\Facade\Action;
-use Duyler\Framework\Facade\State;
+use Duyler\Framework\Facade\Loader;
 use Duyler\Framework\Facade\Subscription;
 use Duyler\Framework\Loader\LoaderService;
 use FilesystemIterator;
@@ -78,9 +79,10 @@ final class Kernel
     {
         $loaderCollection = new LoaderCollection();
 
-        new State($loaderCollection);
+        new Loader($loaderCollection);
         new Subscription($this->busBuilder);
         new Action($this->busBuilder);
+        new Service($this->busBuilder, $this->container);
 
         $buildPath = $this->projectRootDir . 'build';
 
@@ -111,11 +113,11 @@ final class Kernel
 
     private function loadPackages(LoaderCollection $preloader): void
     {
-        $stateLoaders = $preloader->get();
+        $packageLoaders = $preloader->get();
 
         $loaderService = new LoaderService($this->container, $this->busBuilder);
 
-        foreach ($stateLoaders as $loaderClass) {
+        foreach ($packageLoaders as $loaderClass) {
             /** @var PackageLoaderInterface $loader */
             $loader = $this->container->make($loaderClass);
             $loader->load($loaderService);

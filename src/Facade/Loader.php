@@ -6,7 +6,7 @@ namespace Duyler\Framework\Facade;
 
 use Duyler\Framework\Loader\LoaderCollection;
 
-class State
+class Loader
 {
     private static LoaderCollection $loaderCollection;
 
