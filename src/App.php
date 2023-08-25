@@ -23,7 +23,7 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RuntimeException;
 
-final class Kernel
+final class App
 {
     private BusBuilder $busBuilder;
     private Config $config;
