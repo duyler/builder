@@ -20,7 +20,8 @@
         "duyler/event-bus": "*",
         "duyler/dependency-injection": "*",
         "duyler/config": "*",
-        "duyler/contract": "*"
+        "duyler/contract": "*",
+        "vlucas/phpdotenv": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "^10.0"
