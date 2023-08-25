@@ -105,7 +105,7 @@ final class Kernel
         foreach ($iterator as $path => $dir) {
             if ($dir->isFile() && $path !== $preload) {
                 if (strtolower($dir->getExtension()) === 'php') {
-                    include $path;
+                    require_once $path;
                 }
             }
         }
