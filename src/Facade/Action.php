@@ -18,14 +18,15 @@ class Action
     }
 
     public static function add(
-        string $id,
+        string         $id,
         Closure|string $handler,
-        array $required = [],
-        array $classMap = [],
-        array $providers = [],
+        array          $required = [],
+        array          $classMap = [],
+        array          $providers = [],
         Closure|string $rollback = '',
-        array $arguments = [],
-        bool $void = false
+        array          $arguments = [],
+        bool           $externalAccess = false,
+        ?string        $contract = null,
     ): void {
         self::$busBuilder->addAction(
             new ActionDto(
@@ -36,20 +37,22 @@ class Action
                 providers: $providers,
                 rollback: $rollback,
                 arguments: $arguments,
-                void: $void,
+                externalAccess: $externalAccess,
+                contract: $contract,
             )
         );
     }
 
     public static function do(
-        string $id,
+        string         $id,
         Closure|string $handler,
-        array $required = [],
-        array $classMap = [],
-        array $providers = [],
+        array          $required = [],
+        array          $classMap = [],
+        array          $providers = [],
         Closure|string $rollback = '',
-        array $arguments = [],
-        bool $void = false
+        array          $arguments = [],
+        bool           $externalAccess = false,
+        ?string        $contract = null,
     ): void {
         self::$busBuilder->doAction(
             new ActionDto(
@@ -60,7 +63,8 @@ class Action
                 providers: $providers,
                 rollback: $rollback,
                 arguments: $arguments,
-                void: $void,
+                externalAccess: $externalAccess,
+                contract: $contract,
             )
         );
     }
