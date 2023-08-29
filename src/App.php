@@ -126,6 +126,6 @@ final class App
 
     private function getCacheDir(): string
     {
-        return $this->projectRootDir . '/var/cache/';
+        return $this->projectRootDir . 'var/cache/';
     }
 }
