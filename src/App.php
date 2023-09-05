@@ -64,13 +64,14 @@ final class App
     {
         $this->busBuilder = new BusBuilder();
 
+        $this->collectConfig();
+
         $this->build();
 
         $this->busBuilder
             ->setConfig(new \Duyler\EventBus\Dto\Config(
                 defaultCacheDir: $this->getCacheDir()
             ))
-            ->addSharedService($this->config)
             ->build()
             ->run();
     }
@@ -92,7 +93,14 @@ final class App
             throw new RuntimeException(sprintf('File %s not found', $preload));
         }
 
-        require $preload;
+        $builder = new class() {
+            public function collect(string $path): void
+            {
+                require_once $path;
+            }
+        };
+
+        $builder->collect($preload);
 
         $this->loadPackages($loaderCollection);
 
@@ -105,7 +113,48 @@ final class App
         foreach ($iterator as $path => $dir) {
             if ($dir->isFile() && $path !== $preload) {
                 if (strtolower($dir->getExtension()) === 'php') {
-                    require_once $path;
+                    $builder->collect($path);
+                }
+            }
+        }
+    }
+
+    private function collectConfig(): void
+    {
+        $this->busBuilder->addSharedService($this->config);
+
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($this->projectRootDir . 'config', FilesystemIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::SELF_FIRST,
+            RecursiveIteratorIterator::CATCH_GET_CHILD
+        );
+
+        $configCollector = new class($this->projectRootDir) {
+            public function __construct(private readonly string $projectRootDir)
+            {
+            }
+
+            public function collect(string $path): array
+            {
+                return require_once $path;
+            }
+        };
+
+        foreach ($iterator as $path => $dir) {
+            if ($dir->isFile()) {
+                if (strtolower($dir->getExtension()) === 'php') {
+                    $config = $configCollector->collect($path);
+                    if (!is_array($config)) {
+                        continue;
+                    }
+
+                    foreach ($config as $key => $value) {
+                        if (class_exists($key)) {
+                            $config = new $key(...$value);
+                            $this->busBuilder->addSharedService($config);
+                            $this->container->set($config);
+                        }
+                    }
                 }
             }
         }
