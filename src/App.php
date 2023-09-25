@@ -89,11 +89,11 @@ final class App
 
         $preload = $buildPath . DIRECTORY_SEPARATOR . 'preload.php';
 
-        if (is_file($preload) ===false) {
+        if (is_file($preload) === false) {
             throw new RuntimeException(sprintf('File %s not found', $preload));
         }
 
-        $builder = new class() {
+        $builder = new class () {
             public function collect(string $path): void
             {
                 require_once $path;
@@ -129,7 +129,7 @@ final class App
             RecursiveIteratorIterator::CATCH_GET_CHILD
         );
 
-        $configCollector = new class($this->projectRootDir) {
+        $configCollector = new class ($this->projectRootDir) {
             public function __construct(private readonly string $projectRootDir)
             {
             }
