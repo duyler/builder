@@ -24,9 +24,11 @@ class Action
         array          $classMap = [],
         array          $providers = [],
         Closure|string $rollback = '',
-        array          $arguments = [],
+        string         $argument = '',
         bool           $externalAccess = false,
         ?string        $contract = null,
+        bool           $repeatable = false,
+        bool           $continueIfFail = true,
     ): void {
         self::$busBuilder->addAction(
             new ActionDto(
@@ -35,10 +37,12 @@ class Action
                 required: $required,
                 classMap: $classMap,
                 providers: $providers,
-                rollback: $rollback,
-                arguments: $arguments,
-                externalAccess: $externalAccess,
+                argument: $argument,
                 contract: $contract,
+                rollback: $rollback,
+                externalAccess: $externalAccess,
+                repeatable: $repeatable,
+                continueIfFail: $continueIfFail
             )
         );
     }
@@ -50,9 +54,11 @@ class Action
         array          $classMap = [],
         array          $providers = [],
         Closure|string $rollback = '',
-        array          $arguments = [],
+        string         $argument = '',
         bool           $externalAccess = false,
         ?string        $contract = null,
+        bool           $repeatable = false,
+        bool           $continueIfFail = true,
     ): void {
         self::$busBuilder->doAction(
             new ActionDto(
@@ -61,10 +67,12 @@ class Action
                 required: $required,
                 classMap: $classMap,
                 providers: $providers,
-                rollback: $rollback,
-                arguments: $arguments,
-                externalAccess: $externalAccess,
+                argument: $argument,
                 contract: $contract,
+                rollback: $rollback,
+                externalAccess: $externalAccess,
+                repeatable: $repeatable,
+                continueIfFail: $continueIfFail
             )
         );
     }

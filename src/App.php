@@ -62,16 +62,17 @@ final class App
 
     public function run(): void
     {
-        $this->busBuilder = new BusBuilder();
+        $this->busBuilder = new BusBuilder(
+            new \Duyler\EventBus\Dto\Config(
+                defaultCacheDir: $this->getCacheDir()
+            )
+        );
 
         $this->collectConfig();
 
         $this->build();
 
         $this->busBuilder
-            ->setConfig(new \Duyler\EventBus\Dto\Config(
-                defaultCacheDir: $this->getCacheDir()
-            ))
             ->build()
             ->run();
     }
