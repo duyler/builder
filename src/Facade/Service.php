@@ -14,15 +14,15 @@ final class Service
 
     public function __construct(BusBuilder $busBuilder, ContainerInterface $container)
     {
-        static::$busBuilder = $busBuilder;
-        static::$container = $container;
+        self::$busBuilder = $busBuilder;
+        self::$container = $container;
     }
 
     public static function add(string $id, array $providers = [], array $bind = []): void
     {
-        static::$container->setProviders($providers);
-        static::$container->bind($bind);
+        self::$container->addProviders($providers);
+        self::$container->bind($bind);
 
-        static::$busBuilder->addSharedService(static::$container->make($id));
+        self::$busBuilder->addSharedService(self::$container->get($id));
     }
 }

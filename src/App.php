@@ -5,28 +5,29 @@ declare(strict_types=1);
 namespace Duyler\Framework;
 
 use Dotenv\Dotenv;
-use Duyler\Config\Config;
-use Duyler\Config\ConfigFactory;
-use Duyler\Contract\PackageLoader\PackageLoaderInterface;
-use Duyler\DependencyInjection\ContainerBuilder;
-use Duyler\DependencyInjection\ContainerInterface;
+use Duyler\Config\FileConfig;
+use Duyler\DependencyInjection\Container;
+use Duyler\DependencyInjection\ContainerConfig;
+use Duyler\DependencyInjection\Exception\InterfaceMapNotFoundException;
 use Duyler\EventBus\BusBuilder;
-use Duyler\Framework\Facade\Service;
-use Duyler\Framework\Loader\LoaderCollection;
+use Duyler\EventBus\Dto\Config;
 use Duyler\Framework\Facade\Action;
-use Duyler\Framework\Facade\Loader;
+use Duyler\Framework\Facade\Service;
 use Duyler\Framework\Facade\Subscription;
+use Duyler\Framework\Loader\LoaderCollection;
+use Duyler\Framework\Loader\LoaderInterface;
 use Duyler\Framework\Loader\LoaderService;
 use FilesystemIterator;
 use LogicException;
+use Psr\Container\ContainerInterface;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-use RuntimeException;
+use Throwable;
 
 final class App
 {
     private BusBuilder $busBuilder;
-    private Config $config;
+    private FileConfig $config;
     private ContainerInterface $container;
     private string $projectRootDir;
 
@@ -39,37 +40,49 @@ final class App
                 $dir = $dir . '../';
             }
 
-            if (realpath($dir) === false) {
+            if (false === realpath($dir)) {
                 throw new LogicException('Cannot auto-detect project dir');
             }
-        };
+        }
 
         $this->projectRootDir = $dir;
 
         $env = Dotenv::createImmutable($this->projectRootDir);
 
-        $configFactory = new ConfigFactory();
-        $this->config = $configFactory->create(
-            $this->projectRootDir . 'config/',
-            $env->safeLoad() + $_ENV + [Config::PROJECT_ROOT => $this->projectRootDir]
+        $containerConfig = new ContainerConfig();
+        $containerConfig->withBind([
+            LoaderInterface::class => Loader::class
+        ]);
+
+        $configCollector = new ConfigCollector($containerConfig);
+
+        $this->config = new FileConfig(
+            configDir: $this->projectRootDir . 'config',
+            env: $env->safeLoad() + $_ENV + [FileConfig::PROJECT_ROOT => $this->projectRootDir],
+            externalConfigCollector: $configCollector,
         );
 
-        $containerConfig = new \Duyler\DependencyInjection\Config($this->getCacheDir());
-
-        $this->container = ContainerBuilder::build($containerConfig);
+        $this->container = new Container($containerConfig);
         $this->container->set($this->config);
-    }
 
-    public function run(): void
-    {
         $this->busBuilder = new BusBuilder(
-            new \Duyler\EventBus\Dto\Config(
-                defaultCacheDir: $this->getCacheDir()
+            new Config(
+                bind: $containerConfig->getClassMap(),
+                providers: $containerConfig->getProviders(),
+                definitions: $containerConfig->getDefinitions(),
             )
         );
+    }
 
-        $this->collectConfig();
+    /**
+     * @throws InterfaceMapNotFoundException
+     * @throws Throwable
+     */
+    public function run(): void
+    {
+        $this->busBuilder->addSharedService($this->config);
 
+        $this->loadPackages();
         $this->build();
 
         $this->busBuilder
@@ -79,20 +92,9 @@ final class App
 
     private function build(): void
     {
-        $loaderCollection = new LoaderCollection();
-
-        new Loader($loaderCollection);
         new Subscription($this->busBuilder);
         new Action($this->busBuilder);
         new Service($this->busBuilder, $this->container);
-
-        $buildPath = $this->projectRootDir . 'build';
-
-        $preload = $buildPath . DIRECTORY_SEPARATOR . 'preload.php';
-
-        if (is_file($preload) === false) {
-            throw new RuntimeException(sprintf('File %s not found', $preload));
-        }
 
         $builder = new class () {
             public function collect(string $path): void
@@ -101,9 +103,7 @@ final class App
             }
         };
 
-        $builder->collect($preload);
-
-        $this->loadPackages($loaderCollection);
+        $buildPath = $this->projectRootDir . 'build';
 
         $iterator = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator($buildPath, FilesystemIterator::SKIP_DOTS),
@@ -112,70 +112,29 @@ final class App
         );
 
         foreach ($iterator as $path => $dir) {
-            if ($dir->isFile() && $path !== $preload) {
-                if (strtolower($dir->getExtension()) === 'php') {
+            if ($dir->isFile()) {
+                if ('php' === strtolower($dir->getExtension())) {
                     $builder->collect($path);
                 }
             }
         }
     }
 
-    private function collectConfig(): void
+    private function loadPackages(): void
     {
-        $this->busBuilder->addSharedService($this->config);
+        $loaderCollection = new LoaderCollection();
 
-        $iterator = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator($this->projectRootDir . 'config', FilesystemIterator::SKIP_DOTS),
-            RecursiveIteratorIterator::SELF_FIRST,
-            RecursiveIteratorIterator::CATCH_GET_CHILD
-        );
+        /** @var LoaderInterface $loader */
+        $loader = $this->container->get(LoaderInterface::class);
+        $loader->load($loaderCollection);
 
-        $configCollector = new class ($this->projectRootDir) {
-            public function __construct(private readonly string $projectRootDir)
-            {
-            }
+        $packageLoaders = $loaderCollection->get();
 
-            public function collect(string $path): array
-            {
-                return require_once $path;
-            }
-        };
-
-        foreach ($iterator as $path => $dir) {
-            if ($dir->isFile()) {
-                if (strtolower($dir->getExtension()) === 'php') {
-                    $config = $configCollector->collect($path);
-                    if (!is_array($config)) {
-                        continue;
-                    }
-
-                    foreach ($config as $key => $value) {
-                        if (class_exists($key)) {
-                            $config = new $key(...$value);
-                            $this->busBuilder->addSharedService($config);
-                            $this->container->set($config);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private function loadPackages(LoaderCollection $preloader): void
-    {
-        $packageLoaders = $preloader->get();
-
-        $loaderService = new LoaderService($this->container, $this->busBuilder);
+        $loaderService = new LoaderService($this->container, $this->busBuilder, $this->config);
 
         foreach ($packageLoaders as $loaderClass) {
-            /** @var PackageLoaderInterface $loader */
-            $loader = $this->container->make($loaderClass);
-            $loader->load($loaderService);
+            $packageLoader = $this->container->get($loaderClass);
+            $packageLoader->load($loaderService);
         }
-    }
-
-    private function getCacheDir(): string
-    {
-        return $this->projectRootDir . 'var/cache/';
     }
 }
