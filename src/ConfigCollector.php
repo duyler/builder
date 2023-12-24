@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Duyler\Framework;
 
-use Duyler\Config\ExternalConfigCollectorInterface;
+use Duyler\Config\ConfigCollectorInterface;
 use Duyler\DependencyInjection\Definition;
 use Duyler\DependencyInjection\ContainerConfig;
 use Duyler\DependencyInjection\Provider\ProviderInterface;
 use Override;
 
-readonly class ConfigCollector implements ExternalConfigCollectorInterface
+readonly class ConfigCollector implements ConfigCollectorInterface
 {
     public function __construct(private ContainerConfig $containerConfig) {}
 
