@@ -10,25 +10,34 @@ use Duyler\DependencyInjection\Container;
 use Duyler\DependencyInjection\ContainerConfig;
 use Duyler\DependencyInjection\Exception\InterfaceMapNotFoundException;
 use Duyler\EventBus\BusBuilder;
+use Duyler\EventBus\BusInterface;
 use Duyler\EventBus\Dto\Config;
 use Duyler\Framework\Facade\Action;
 use Duyler\Framework\Facade\Service;
 use Duyler\Framework\Facade\Subscription;
+use Duyler\Framework\Http\RequestProvider;
+use Duyler\Framework\Http\ResponseEmitter;
 use Duyler\Framework\Loader\LoaderCollection;
 use Duyler\Framework\Loader\LoaderInterface;
 use Duyler\Framework\Loader\LoaderService;
 use FilesystemIterator;
+use HttpSoft\Response\EmptyResponse;
 use LogicException;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Throwable;
 
-final class App
+final class Application
 {
     private BusBuilder $busBuilder;
     private FileConfig $config;
     private ContainerInterface $container;
+    private ResponseEmitter $responseEmitter;
+    private RequestProvider $requestProvider;
+    private BusInterface $bus;
     private string $projectRootDir;
 
     public function __construct()
@@ -62,8 +71,15 @@ final class App
             externalConfigCollector: $configCollector,
         );
 
+        $this->requestProvider = new RequestProvider();
+        $this->responseEmitter = new ResponseEmitter(
+            new EmptyResponse(404),
+        );
+
         $this->container = new Container($containerConfig);
         $this->container->set($this->config);
+        $this->container->set($this->responseEmitter);
+        $this->container->set($this->requestProvider);
 
         $this->busBuilder = new BusBuilder(
             new Config(
@@ -72,22 +88,31 @@ final class App
                 definitions: $containerConfig->getDefinitions(),
             )
         );
+
+        $this->busBuilder->addSharedService($this->config);
+        $this->busBuilder->addSharedService($this->requestProvider);
+        $this->busBuilder->addSharedService($this->responseEmitter);
+
+        $this->loadPackages();
+        $this->build();
+
+        $this->bus = $this->busBuilder->build();
     }
 
     /**
      * @throws InterfaceMapNotFoundException
      * @throws Throwable
      */
-    public function run(): void
+    public function run(?ServerRequestInterface $request = null): ResponseInterface
     {
-        $this->busBuilder->addSharedService($this->config);
+        if ($request !== null) {
+            $this->container->set($request);
+            $this->container->bind([ServerRequestInterface::class => $request::class]);
+            $this->requestProvider->set($request);
+        }
 
-        $this->loadPackages();
-        $this->build();
-
-        $this->busBuilder
-            ->build()
-            ->run();
+        $this->bus->run();
+        return $this->responseEmitter->getResponse();
     }
 
     private function build(): void

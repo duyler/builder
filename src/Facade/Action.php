@@ -19,16 +19,19 @@ class Action
 
     public static function add(
         string $id,
-        Closure|string $handler,
+        string | Closure $handler,
         array $required = [],
         array $classMap = [],
         array $providers = [],
-        Closure|string $rollback = '',
         string $argument = '',
+        ?string $contract = null,
+        string | Closure $rollback = '',
         bool $externalAccess = false,
-        string $contract = null,
         bool $repeatable = false,
         bool $continueIfFail = true,
+        bool $private = false,
+        array $sealed = [],
+        bool $silent = false,
     ): void {
         self::$busBuilder->addAction(
             new ActionDto(
@@ -42,23 +45,29 @@ class Action
                 rollback: $rollback,
                 externalAccess: $externalAccess,
                 repeatable: $repeatable,
-                continueIfFail: $continueIfFail
+                continueIfFail: $continueIfFail,
+                private: $private,
+                sealed: $sealed,
+                silent: $silent,
             )
         );
     }
 
     public static function do(
         string $id,
-        Closure|string $handler,
+        string | Closure $handler,
         array $required = [],
         array $classMap = [],
         array $providers = [],
-        Closure|string $rollback = '',
         string $argument = '',
+        ?string $contract = null,
+        string | Closure $rollback = '',
         bool $externalAccess = false,
-        string $contract = null,
         bool $repeatable = false,
         bool $continueIfFail = true,
+        bool $private = false,
+        array $sealed = [],
+        bool $silent = false,
     ): void {
         self::$busBuilder->doAction(
             new ActionDto(
@@ -72,7 +81,10 @@ class Action
                 rollback: $rollback,
                 externalAccess: $externalAccess,
                 repeatable: $repeatable,
-                continueIfFail: $continueIfFail
+                continueIfFail: $continueIfFail,
+                private: $private,
+                sealed: $sealed,
+                silent: $silent,
             )
         );
     }
