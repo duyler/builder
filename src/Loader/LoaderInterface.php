@@ -6,5 +6,6 @@ namespace Duyler\Framework\Loader;
 
 interface LoaderInterface
 {
-    public function load(LoaderCollection $loaderCollection): void;
+    public function packages(LoaderCollection $loaderCollection): void;
+    public function runners(): array;
 }

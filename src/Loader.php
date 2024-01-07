@@ -11,5 +11,11 @@ use Override;
 class Loader implements LoaderInterface
 {
     #[Override]
-    public function load(LoaderCollection $loaderCollection): void {}
+    public function packages(LoaderCollection $loaderCollection): void {}
+
+    #[Override]
+    public function runners(): array
+    {
+        return [];
+    }
 }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Duyler\Framework\Facade;
+namespace Duyler\Framework\Build;
 
 use Closure;
 use Duyler\EventBus\BusBuilder;

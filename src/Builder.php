@@ -5,42 +5,36 @@ declare(strict_types=1);
 namespace Duyler\Framework;
 
 use Dotenv\Dotenv;
+use Duyler\Config\ConfigInterface;
 use Duyler\Config\FileConfig;
 use Duyler\DependencyInjection\Container;
 use Duyler\DependencyInjection\ContainerConfig;
-use Duyler\DependencyInjection\Exception\InterfaceMapNotFoundException;
 use Duyler\EventBus\BusBuilder;
 use Duyler\EventBus\BusInterface;
 use Duyler\EventBus\Dto\Config;
-use Duyler\Framework\Facade\Action;
-use Duyler\Framework\Facade\Service;
-use Duyler\Framework\Facade\Subscription;
-use Duyler\Framework\Http\RequestProvider;
-use Duyler\Framework\Http\ResponseEmitter;
+use Duyler\Framework\Build\Action;
+use Duyler\Framework\Build\Service;
+use Duyler\Framework\Build\Subscription;
 use Duyler\Framework\Loader\LoaderCollection;
 use Duyler\Framework\Loader\LoaderInterface;
 use Duyler\Framework\Loader\LoaderService;
 use FilesystemIterator;
-use HttpSoft\Response\EmptyResponse;
 use LogicException;
 use Psr\Container\ContainerInterface;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-use Throwable;
+use RuntimeException;
 
-final class Application
+class Builder
 {
     private BusBuilder $busBuilder;
     private FileConfig $config;
     private ContainerInterface $container;
-    private ResponseEmitter $responseEmitter;
-    private RequestProvider $requestProvider;
     private BusInterface $bus;
     private string $projectRootDir;
+    private RunnerInterface $runner;
 
-    public function __construct()
+    public function __construct(string $typeId)
     {
         $dir = dirname('__DIR__') . '/';
 
@@ -67,19 +61,12 @@ final class Application
 
         $this->config = new FileConfig(
             configDir: $this->projectRootDir . 'config',
-            env: $env->safeLoad() + $_ENV + [FileConfig::PROJECT_ROOT => $this->projectRootDir],
+            env: $env->safeLoad() + $_ENV + [ConfigInterface::PROJECT_ROOT => $this->projectRootDir],
             externalConfigCollector: $configCollector,
-        );
-
-        $this->requestProvider = new RequestProvider();
-        $this->responseEmitter = new ResponseEmitter(
-            new EmptyResponse(404),
         );
 
         $this->container = new Container($containerConfig);
         $this->container->set($this->config);
-        $this->container->set($this->responseEmitter);
-        $this->container->set($this->requestProvider);
 
         $this->busBuilder = new BusBuilder(
             new Config(
@@ -90,32 +77,30 @@ final class Application
         );
 
         $this->busBuilder->addSharedService($this->config);
-        $this->busBuilder->addSharedService($this->requestProvider);
-        $this->busBuilder->addSharedService($this->responseEmitter);
 
-        $this->loadPackages();
-        $this->build();
+        /** @var LoaderInterface $loader */
+        $loader = $this->container->get(LoaderInterface::class);
+        $runners = $loader->runners();
 
-        $this->bus = $this->busBuilder->build();
-    }
-
-    /**
-     * @throws InterfaceMapNotFoundException
-     * @throws Throwable
-     */
-    public function run(?ServerRequestInterface $request = null): ResponseInterface
-    {
-        if ($request !== null) {
-            $this->container->set($request);
-            $this->container->bind([ServerRequestInterface::class => $request::class]);
-            $this->requestProvider->set($request);
+        if (array_key_exists($typeId, $runners) === false) {
+            throw new RuntimeException('Unknown runner type: ' . $typeId);
         }
 
-        $this->bus->run();
-        return $this->responseEmitter->getResponse();
+        /** @var RunnerInterface $runner */
+        $this->runner = $this->container->get($runners[$typeId]);
+        $this->runner->load(new LoaderService($this->container, $this->busBuilder, $this->config));
+
+        $this->loadPackages();
+        $this->loadBuild();
     }
 
-    private function build(): void
+    public function build(): RunnerInterface
+    {
+        $this->runner->prepare($this->busBuilder->build());
+        return $this->runner;
+    }
+
+    private function loadBuild(): void
     {
         new Subscription($this->busBuilder);
         new Action($this->busBuilder);
@@ -151,7 +136,7 @@ final class Application
 
         /** @var LoaderInterface $loader */
         $loader = $this->container->get(LoaderInterface::class);
-        $loader->load($loaderCollection);
+        $loader->packages($loaderCollection);
 
         $packageLoaders = $loaderCollection->get();
 
