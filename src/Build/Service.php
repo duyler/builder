@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Duyler\Framework\Facade;
+namespace Duyler\Framework\Build;
 
 use Duyler\DependencyInjection\ContainerInterface;
 use Duyler\EventBus\BusBuilder;
@@ -14,15 +14,15 @@ final class Service
 
     public function __construct(BusBuilder $busBuilder, ContainerInterface $container)
     {
-        static::$busBuilder = $busBuilder;
-        static::$container = $container;
+        self::$busBuilder = $busBuilder;
+        self::$container = $container;
     }
 
     public static function add(string $id, array $providers = [], array $bind = []): void
     {
-        static::$container->setProviders($providers);
-        static::$container->bind($bind);
+        self::$container->addProviders($providers);
+        self::$container->bind($bind);
 
-        static::$busBuilder->addSharedService(static::$container->make($id));
+        self::$busBuilder->addSharedService(self::$container->get($id));
     }
 }
