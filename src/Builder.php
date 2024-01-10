@@ -10,8 +10,8 @@ use Duyler\Config\FileConfig;
 use Duyler\DependencyInjection\Container;
 use Duyler\DependencyInjection\ContainerConfig;
 use Duyler\EventBus\BusBuilder;
+use Duyler\EventBus\BusConfig;
 use Duyler\EventBus\BusInterface;
-use Duyler\EventBus\Dto\Config;
 use Duyler\Framework\Build\Action;
 use Duyler\Framework\Build\Service;
 use Duyler\Framework\Build\Subscription;
@@ -69,7 +69,7 @@ class Builder
         $this->container->set($this->config);
 
         $this->busBuilder = new BusBuilder(
-            new Config(
+            new BusConfig(
                 bind: $containerConfig->getClassMap(),
                 providers: $containerConfig->getProviders(),
                 definitions: $containerConfig->getDefinitions(),
