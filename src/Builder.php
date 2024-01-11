@@ -12,9 +12,12 @@ use Duyler\DependencyInjection\ContainerConfig;
 use Duyler\EventBus\BusBuilder;
 use Duyler\EventBus\BusConfig;
 use Duyler\EventBus\BusInterface;
-use Duyler\Framework\Build\Action;
-use Duyler\Framework\Build\Service;
-use Duyler\Framework\Build\Subscription;
+use Duyler\Framework\Build\Action\Action;
+use Duyler\Framework\Build\Action\ActionBuilder;
+use Duyler\Framework\Build\AttributeHandlerCollection;
+use Duyler\Framework\Build\Service\Service;
+use Duyler\Framework\Build\Subscription\Subscription;
+use Duyler\Framework\Build\Builder as PackageBuilder;
 use Duyler\Framework\Loader\LoaderCollection;
 use Duyler\Framework\Loader\LoaderInterface;
 use Duyler\Framework\Loader\LoaderService;
@@ -33,6 +36,8 @@ class Builder
     private BusInterface $bus;
     private string $projectRootDir;
     private RunnerInterface $runner;
+    private AttributeHandlerCollection $attributeHandlerCollection;
+    private PackageBuilder $builder;
 
     public function __construct(string $typeId)
     {
@@ -86,9 +91,16 @@ class Builder
             throw new RuntimeException('Unknown runner type: ' . $typeId);
         }
 
+        $this->attributeHandlerCollection = new AttributeHandlerCollection();
+        $this->builder = new PackageBuilder($this->busBuilder, $this->attributeHandlerCollection);
+
         /** @var RunnerInterface $runner */
         $this->runner = $this->container->get($runners[$typeId]);
-        $this->runner->load(new LoaderService($this->container, $this->busBuilder, $this->config));
+        $this->runner->load(new LoaderService(
+            $this->container,
+            $this->config,
+            $this->builder,
+        ));
 
         $this->loadPackages();
         $this->loadBuild();
@@ -102,8 +114,13 @@ class Builder
 
     private function loadBuild(): void
     {
+        $actionBuilder = new ActionBuilder(
+            $this->busBuilder,
+            $this->attributeHandlerCollection,
+        );
+
         new Subscription($this->busBuilder);
-        new Action($this->busBuilder);
+        new Action($actionBuilder);
         new Service($this->busBuilder, $this->container);
 
         $builder = new class () {
@@ -128,6 +145,8 @@ class Builder
                 }
             }
         }
+
+        $actionBuilder->build();
     }
 
     private function loadPackages(): void
@@ -140,7 +159,7 @@ class Builder
 
         $packageLoaders = $loaderCollection->get();
 
-        $loaderService = new LoaderService($this->container, $this->busBuilder, $this->config);
+        $loaderService = new LoaderService($this->container, $this->config, $this->builder);
 
         foreach ($packageLoaders as $loaderClass) {
             $packageLoader = $this->container->get($loaderClass);

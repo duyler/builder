@@ -7,14 +7,14 @@ namespace Duyler\Framework\Loader;
 use Duyler\Config\ConfigInterface;
 use Duyler\Contract\PackageLoader\LoaderServiceInterface;
 use Duyler\DependencyInjection\ContainerInterface;
-use Duyler\EventBus\BusBuilder;
+use Duyler\Framework\Build\Builder;
 
 readonly class LoaderService implements LoaderServiceInterface
 {
     public function __construct(
         private ContainerInterface $container,
-        private BusBuilder $busBuilder,
         private ConfigInterface $config,
+        private Builder $builder,
     ) {}
 
     public function getContainer(): ContainerInterface
@@ -22,9 +22,9 @@ readonly class LoaderService implements LoaderServiceInterface
         return $this->container;
     }
 
-    public function getBuilder(): BusBuilder
+    public function getBuilder(): Builder
     {
-        return $this->busBuilder;
+        return $this->builder;
     }
 
     public function getConfig(): ConfigInterface

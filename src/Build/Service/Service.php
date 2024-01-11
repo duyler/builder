@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Duyler\Framework\Build;
+namespace Duyler\Framework\Build\Service;
 
 use Duyler\DependencyInjection\ContainerInterface;
 use Duyler\EventBus\BusBuilder;

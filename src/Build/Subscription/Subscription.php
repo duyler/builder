@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Duyler\Framework\Build;
+namespace Duyler\Framework\Build\Subscription;
 
 use Duyler\EventBus\BusBuilder;
 use Duyler\EventBus\Dto\Subscription as SubscriptionDto;
