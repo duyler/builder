@@ -51,11 +51,7 @@ class ActionBuilder
                 }
             }
 
-            if ($action->get('type') === 'add') {
-                $this->busBuilder->addAction($busAction);
-            } else {
-                $this->busBuilder->doAction($busAction);
-            }
+            $this->busBuilder->addAction($busAction);
         }
     }
 }

@@ -72,6 +72,13 @@ class Builder
 
         $this->container = new Container($containerConfig);
         $this->container->set($this->config);
+        $this->container->set($this);
+        $this->container->bind(
+            [
+                ConfigInterface::class => FileConfig::class,
+                ContainerInterface::class => Container::class,
+            ],
+        );
 
         $this->busBuilder = new BusBuilder(
             new BusConfig(

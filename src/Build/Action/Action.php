@@ -27,7 +27,6 @@ class Action
 
     /** @var AttributeInterface[] */
     private array $attributes = [];
-    private string $type = 'add';
 
     public function __construct(ActionBuilder $builder)
     {
@@ -39,18 +38,6 @@ class Action
         $action = new self(static::$builder);
         $action->id = $id;
         $action->handler = $handler;
-
-        self::$builder->addAction($action);
-
-        return $action;
-    }
-
-    public static function do(string $id, string|Closure $handler): self
-    {
-        $action = new self(static::$builder);
-        $action->id = $id;
-        $action->handler = $handler;
-        $action->type = 'do';
 
         self::$builder->addAction($action);
 
