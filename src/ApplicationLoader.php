@@ -5,17 +5,11 @@ declare(strict_types=1);
 namespace Duyler\Framework;
 
 use Duyler\Framework\Loader\LoaderCollection;
-use Duyler\Framework\Loader\LoaderInterface;
+use Duyler\Framework\Loader\ApplicationLoaderInterface;
 use Override;
 
-class Loader implements LoaderInterface
+class ApplicationLoader implements ApplicationLoaderInterface
 {
     #[Override]
     public function packages(LoaderCollection $loaderCollection): void {}
-
-    #[Override]
-    public function runners(): array
-    {
-        return [];
-    }
 }

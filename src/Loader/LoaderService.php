@@ -4,31 +4,54 @@ declare(strict_types=1);
 
 namespace Duyler\Framework\Loader;
 
-use Duyler\Config\ConfigInterface;
 use Duyler\Contract\PackageLoader\LoaderServiceInterface;
-use Duyler\DependencyInjection\ContainerInterface;
-use Duyler\Framework\Build\Builder;
+use Duyler\EventBus\BusBuilder;
+use Duyler\EventBus\Contract\State\StateHandlerInterface;
+use Duyler\EventBus\Dto\Action;
+use Duyler\EventBus\Dto\Subscription;
+use Duyler\Framework\Build\AttributeHandlerCollection;
+use Duyler\Framework\Build\AttributeHandlerInterface;
 
 readonly class LoaderService implements LoaderServiceInterface
 {
     public function __construct(
-        private ContainerInterface $container,
-        private ConfigInterface $config,
-        private Builder $builder,
+        private BusBuilder $busBuilder,
+        private AttributeHandlerCollection $attributeHandlerCollection,
     ) {}
 
-    public function getContainer(): ContainerInterface
+    public function addAction(Action $action): self
     {
-        return $this->container;
+        $this->busBuilder->addAction($action);
+        return $this;
     }
 
-    public function getBuilder(): Builder
+    public function doAction(Action $action): self
     {
-        return $this->builder;
+        $this->busBuilder->doAction($action);
+        return $this;
     }
 
-    public function getConfig(): ConfigInterface
+    public function addStateHandler(StateHandlerInterface $stateHandler): self
     {
-        return $this->config;
+        $this->busBuilder->addStateHandler($stateHandler);
+        return $this;
+    }
+
+    public function addSharedService(object $service, array $bind = []): self
+    {
+        $this->busBuilder->addSharedService($service, $bind);
+        return $this;
+    }
+
+    public function addSubscription(Subscription $subscription): self
+    {
+        $this->busBuilder->addSubscription($subscription);
+        return $this;
+    }
+
+    public function addAttributeHandler(AttributeHandlerInterface $attributeHandler): self
+    {
+        $this->attributeHandlerCollection->addHandler($attributeHandler);
+        return $this;
     }
 }

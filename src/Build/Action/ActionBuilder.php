@@ -12,6 +12,7 @@ class ActionBuilder
 {
     /** @var Action[] */
     private array $actions = [];
+
     public function __construct(
         private BusBuilder $busBuilder,
         private AttributeHandlerCollection $attributeHandlerCollection,
