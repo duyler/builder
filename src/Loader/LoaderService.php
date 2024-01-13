@@ -4,19 +4,21 @@ declare(strict_types=1);
 
 namespace Duyler\Framework\Loader;
 
-use Duyler\Contract\PackageLoader\LoaderServiceInterface;
 use Duyler\EventBus\BusBuilder;
 use Duyler\EventBus\Contract\State\StateHandlerInterface;
 use Duyler\EventBus\Dto\Action;
 use Duyler\EventBus\Dto\Subscription;
 use Duyler\Framework\Build\AttributeHandlerCollection;
 use Duyler\Framework\Build\AttributeHandlerInterface;
+use Duyler\Framework\Build\BuilderCollection;
+use Duyler\Framework\Build\BuilderInterface;
 
 readonly class LoaderService implements LoaderServiceInterface
 {
     public function __construct(
         private BusBuilder $busBuilder,
         private AttributeHandlerCollection $attributeHandlerCollection,
+        private BuilderCollection $builderCollection,
     ) {}
 
     public function addAction(Action $action): self
@@ -52,6 +54,12 @@ readonly class LoaderService implements LoaderServiceInterface
     public function addAttributeHandler(AttributeHandlerInterface $attributeHandler): self
     {
         $this->attributeHandlerCollection->addHandler($attributeHandler);
+        return $this;
+    }
+
+    public function addBuilder(BuilderInterface $builder): self
+    {
+        $this->builderCollection->addBuilder($builder);
         return $this;
     }
 }

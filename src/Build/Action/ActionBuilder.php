@@ -7,15 +7,15 @@ namespace Duyler\Framework\Build\Action;
 use Duyler\EventBus\BusBuilder;
 use Duyler\Framework\Build\AttributeHandlerCollection;
 use Duyler\Framework\Build\AttributeInterface;
+use Duyler\Framework\Build\BuilderInterface;
 
-class ActionBuilder
+class ActionBuilder implements BuilderInterface
 {
     /** @var Action[] */
     private array $actions = [];
 
     public function __construct(
-        private BusBuilder $busBuilder,
-        private AttributeHandlerCollection $attributeHandlerCollection,
+        private BusBuilder $busBuilder
     ) {}
 
     public function addAction(Action $action): self
@@ -24,7 +24,7 @@ class ActionBuilder
         return $this;
     }
 
-    public function build(): void
+    public function build(AttributeHandlerCollection $attributeHandlerCollection): void
     {
         foreach ($this->actions as $action) {
             $busAction = new \Duyler\EventBus\Dto\Action(
@@ -46,7 +46,7 @@ class ActionBuilder
 
             /** @var AttributeInterface $attribute */
             foreach ($action->get('attributes') as $attribute) {
-                $attributeHandlers = $this->attributeHandlerCollection->get($attribute::class);
+                $attributeHandlers = $attributeHandlerCollection->get($attribute::class);
                 foreach ($attributeHandlers as $attributeHandler) {
                     $attribute->accept($attributeHandler, $busAction);
                 }

@@ -15,6 +15,7 @@ use Duyler\EventBus\BusInterface;
 use Duyler\Framework\Build\Action\Action;
 use Duyler\Framework\Build\Action\ActionBuilder;
 use Duyler\Framework\Build\AttributeHandlerCollection;
+use Duyler\Framework\Build\BuilderCollection;
 use Duyler\Framework\Build\Service\Service;
 use Duyler\Framework\Build\Subscription\Subscription;
 use Duyler\Framework\Loader\LoaderCollection;
@@ -32,6 +33,7 @@ class Builder
     private FileConfig $config;
     private ContainerInterface $container;
     private AttributeHandlerCollection $attributeHandlerCollection;
+    private BuilderCollection $builderCollection;
     private string $projectRootDir;
 
     public function __construct()
@@ -88,6 +90,7 @@ class Builder
         ]);
 
         $this->attributeHandlerCollection = new AttributeHandlerCollection();
+        $this->builderCollection = new BuilderCollection();
     }
 
     /** @return Container */
@@ -110,7 +113,6 @@ class Builder
     {
         $actionBuilder = new ActionBuilder(
             $this->busBuilder,
-            $this->attributeHandlerCollection,
         );
 
         new Subscription($this->busBuilder);
@@ -140,7 +142,11 @@ class Builder
             }
         }
 
-        $actionBuilder->build();
+        $actionBuilder->build($this->attributeHandlerCollection);
+
+        foreach ($this->builderCollection->getBuilders() as $builder) {
+            $builder->build($this->attributeHandlerCollection);
+        }
     }
 
     public function loadPackages(): void
@@ -153,7 +159,11 @@ class Builder
 
         $packageLoaders = $loaderCollection->get();
 
-        $loaderService = new LoaderService($this->busBuilder, $this->attributeHandlerCollection);
+        $loaderService = new LoaderService(
+            $this->busBuilder,
+            $this->attributeHandlerCollection,
+            $this->builderCollection,
+        );
 
         foreach ($packageLoaders as $loaderClass) {
             $packageLoader = $this->container->get($loaderClass);
