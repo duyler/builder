@@ -7,6 +7,7 @@ namespace Duyler\Framework\Loader;
 use Duyler\EventBus\BusBuilder;
 use Duyler\EventBus\Contract\State\StateHandlerInterface;
 use Duyler\EventBus\Dto\Action;
+use Duyler\EventBus\Dto\Context;
 use Duyler\EventBus\Dto\Subscription;
 use Duyler\Framework\Build\AttributeHandlerCollection;
 use Duyler\Framework\Build\AttributeHandlerInterface;
@@ -60,6 +61,12 @@ readonly class LoaderService implements LoaderServiceInterface
     public function addBuilder(BuilderInterface $builder): self
     {
         $this->builderCollection->addBuilder($builder);
+        return $this;
+    }
+
+    public function addStateContext(Context $context): self
+    {
+        $this->busBuilder->addStateContext($context);
         return $this;
     }
 }

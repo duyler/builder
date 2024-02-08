@@ -16,6 +16,7 @@ class Action
     private array $bind = [];
     private array $providers = [];
     private string $argument = '';
+    private ?string $argumentFactory = null;
     private ?string $contract = null;
     private string | Closure $rollback = '';
     private bool $externalAccess = false;
@@ -65,6 +66,12 @@ class Action
     public function argument(string $argument): self
     {
         $this->argument = $argument;
+        return $this;
+    }
+
+    public function argumentFactory(string $argumentFactory): self
+    {
+        $this->argumentFactory = $argumentFactory;
         return $this;
     }
 

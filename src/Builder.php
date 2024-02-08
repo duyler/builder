@@ -8,6 +8,7 @@ use Dotenv\Dotenv;
 use Duyler\Config\ConfigInterface;
 use Duyler\Config\FileConfig;
 use Duyler\DependencyInjection\Container;
+use Duyler\DependencyInjection\ContainerInterface as DuylerContainerInterface;
 use Duyler\DependencyInjection\ContainerConfig;
 use Duyler\EventBus\BusBuilder;
 use Duyler\EventBus\BusConfig;
@@ -74,6 +75,7 @@ class Builder
             [
                 ConfigInterface::class => FileConfig::class,
                 ContainerInterface::class => Container::class,
+                DuylerContainerInterface::class => Container::class,
             ],
         );
 

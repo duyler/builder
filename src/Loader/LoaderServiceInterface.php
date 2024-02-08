@@ -6,6 +6,7 @@ namespace Duyler\Framework\Loader;
 
 use Duyler\EventBus\Contract\State\StateHandlerInterface;
 use Duyler\EventBus\Dto\Action;
+use Duyler\EventBus\Dto\Context;
 use Duyler\EventBus\Dto\Subscription;
 use Duyler\Framework\Build\AttributeHandlerInterface;
 use Duyler\Framework\Build\BuilderInterface;
@@ -25,4 +26,6 @@ interface LoaderServiceInterface
     public function addAttributeHandler(AttributeHandlerInterface $attributeHandler): self;
 
     public function addBuilder(BuilderInterface $builder): self;
+
+    public function addStateContext(Context $context): self;
 }

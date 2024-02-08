@@ -15,7 +15,7 @@ class ActionBuilder implements BuilderInterface
     private array $actions = [];
 
     public function __construct(
-        private BusBuilder $busBuilder
+        private BusBuilder $busBuilder,
     ) {}
 
     public function addAction(Action $action): self
@@ -34,6 +34,7 @@ class ActionBuilder implements BuilderInterface
                 bind: $action->get('bind'),
                 providers: $action->get('providers'),
                 argument: $action->get('argument'),
+                argumentFactory: $action->get('argumentFactory'),
                 contract: $action->get('contract'),
                 rollback: $action->get('rollback'),
                 externalAccess: $action->get('externalAccess'),
@@ -54,5 +55,7 @@ class ActionBuilder implements BuilderInterface
 
             $this->busBuilder->addAction($busAction);
         }
+
+        $this->actions = [];
     }
 }
