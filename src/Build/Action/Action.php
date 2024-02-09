@@ -34,7 +34,7 @@ class Action
         static::$builder = $builder;
     }
 
-    public static function add(string $id, string|Closure $handler): self
+    public static function build(string $id, string|Closure $handler): self
     {
         $action = new self(static::$builder);
         $action->id = $id;
