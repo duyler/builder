@@ -4,31 +4,69 @@ declare(strict_types=1);
 
 namespace Duyler\Framework\Loader;
 
-use Duyler\Config\ConfigInterface;
-use Duyler\Contract\PackageLoader\LoaderServiceInterface;
-use Duyler\DependencyInjection\ContainerInterface;
 use Duyler\EventBus\BusBuilder;
+use Duyler\EventBus\Contract\State\StateHandlerInterface;
+use Duyler\EventBus\Dto\Action;
+use Duyler\EventBus\Dto\Context;
+use Duyler\EventBus\Dto\Subscription;
+use Duyler\Framework\Build\AttributeHandlerCollection;
+use Duyler\Framework\Build\AttributeHandlerInterface;
+use Duyler\Framework\Build\BuilderCollection;
+use Duyler\Framework\Build\BuilderInterface;
 
 readonly class LoaderService implements LoaderServiceInterface
 {
     public function __construct(
-        private ContainerInterface $container,
         private BusBuilder $busBuilder,
-        private ConfigInterface $config,
+        private AttributeHandlerCollection $attributeHandlerCollection,
+        private BuilderCollection $builderCollection,
     ) {}
 
-    public function getContainer(): ContainerInterface
+    public function addAction(Action $action): self
     {
-        return $this->container;
+        $this->busBuilder->addAction($action);
+        return $this;
     }
 
-    public function getBuilder(): BusBuilder
+    public function doAction(Action $action): self
     {
-        return $this->busBuilder;
+        $this->busBuilder->doAction($action);
+        return $this;
     }
 
-    public function getConfig(): ConfigInterface
+    public function addStateHandler(StateHandlerInterface $stateHandler): self
     {
-        return $this->config;
+        $this->busBuilder->addStateHandler($stateHandler);
+        return $this;
+    }
+
+    public function addSharedService(object $service, array $bind = []): self
+    {
+        $this->busBuilder->addSharedService($service, $bind);
+        return $this;
+    }
+
+    public function addSubscription(Subscription $subscription): self
+    {
+        $this->busBuilder->addSubscription($subscription);
+        return $this;
+    }
+
+    public function addAttributeHandler(AttributeHandlerInterface $attributeHandler): self
+    {
+        $this->attributeHandlerCollection->addHandler($attributeHandler);
+        return $this;
+    }
+
+    public function addBuilder(BuilderInterface $builder): self
+    {
+        $this->builderCollection->addBuilder($builder);
+        return $this;
+    }
+
+    public function addStateContext(Context $context): self
+    {
+        $this->busBuilder->addStateContext($context);
+        return $this;
     }
 }

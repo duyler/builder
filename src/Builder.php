@@ -8,33 +8,36 @@ use Dotenv\Dotenv;
 use Duyler\Config\ConfigInterface;
 use Duyler\Config\FileConfig;
 use Duyler\DependencyInjection\Container;
+use Duyler\DependencyInjection\ContainerInterface as DuylerContainerInterface;
 use Duyler\DependencyInjection\ContainerConfig;
 use Duyler\EventBus\BusBuilder;
+use Duyler\EventBus\BusConfig;
 use Duyler\EventBus\BusInterface;
-use Duyler\EventBus\Dto\Config;
-use Duyler\Framework\Build\Action;
-use Duyler\Framework\Build\Service;
-use Duyler\Framework\Build\Subscription;
+use Duyler\Framework\Build\Action\Action;
+use Duyler\Framework\Build\Action\ActionBuilder;
+use Duyler\Framework\Build\AttributeHandlerCollection;
+use Duyler\Framework\Build\BuilderCollection;
+use Duyler\Framework\Build\Service\Service;
+use Duyler\Framework\Build\Subscription\Subscription;
 use Duyler\Framework\Loader\LoaderCollection;
-use Duyler\Framework\Loader\LoaderInterface;
+use Duyler\Framework\Loader\ApplicationLoaderInterface;
 use Duyler\Framework\Loader\LoaderService;
 use FilesystemIterator;
 use LogicException;
 use Psr\Container\ContainerInterface;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-use RuntimeException;
 
 class Builder
 {
     private BusBuilder $busBuilder;
     private FileConfig $config;
     private ContainerInterface $container;
-    private BusInterface $bus;
+    private AttributeHandlerCollection $attributeHandlerCollection;
+    private BuilderCollection $builderCollection;
     private string $projectRootDir;
-    private RunnerInterface $runner;
 
-    public function __construct(string $typeId)
+    public function __construct()
     {
         $dir = dirname('__DIR__') . '/';
 
@@ -54,7 +57,7 @@ class Builder
 
         $containerConfig = new ContainerConfig();
         $containerConfig->withBind([
-            LoaderInterface::class => Loader::class
+            ApplicationLoaderInterface::class => ApplicationLoader::class
         ]);
 
         $configCollector = new ConfigCollector($containerConfig);
@@ -67,43 +70,55 @@ class Builder
 
         $this->container = new Container($containerConfig);
         $this->container->set($this->config);
+        $this->container->set($this->container);
+        $this->container->bind(
+            [
+                ConfigInterface::class => FileConfig::class,
+                ContainerInterface::class => Container::class,
+                DuylerContainerInterface::class => Container::class,
+            ],
+        );
 
         $this->busBuilder = new BusBuilder(
-            new Config(
+            new BusConfig(
                 bind: $containerConfig->getClassMap(),
                 providers: $containerConfig->getProviders(),
                 definitions: $containerConfig->getDefinitions(),
             )
         );
 
-        $this->busBuilder->addSharedService($this->config);
+        $this->busBuilder->addSharedService($this->config, [
+            ConfigInterface::class => FileConfig::class,
+        ]);
 
-        /** @var LoaderInterface $loader */
-        $loader = $this->container->get(LoaderInterface::class);
-        $runners = $loader->runners();
-
-        if (array_key_exists($typeId, $runners) === false) {
-            throw new RuntimeException('Unknown runner type: ' . $typeId);
-        }
-
-        /** @var RunnerInterface $runner */
-        $this->runner = $this->container->get($runners[$typeId]);
-        $this->runner->load(new LoaderService($this->container, $this->busBuilder, $this->config));
-
-        $this->loadPackages();
-        $this->loadBuild();
+        $this->attributeHandlerCollection = new AttributeHandlerCollection();
+        $this->builderCollection = new BuilderCollection();
     }
 
-    public function build(): RunnerInterface
+    /** @return Container */
+    public function getContainer(): ContainerInterface
     {
-        $this->runner->prepare($this->busBuilder->build());
-        return $this->runner;
+        return $this->container;
     }
 
-    private function loadBuild(): void
+    public function addSharedService(object $object, array $bind = []): void
     {
+        $this->busBuilder->addSharedService($object, $bind);
+    }
+
+    public function build(): BusInterface
+    {
+        return $this->busBuilder->build();
+    }
+
+    public function loadBuild(): void
+    {
+        $actionBuilder = new ActionBuilder(
+            $this->busBuilder,
+        );
+
         new Subscription($this->busBuilder);
-        new Action($this->busBuilder);
+        new Action($actionBuilder);
         new Service($this->busBuilder, $this->container);
 
         $builder = new class () {
@@ -128,19 +143,29 @@ class Builder
                 }
             }
         }
+
+        $actionBuilder->build($this->attributeHandlerCollection);
+
+        foreach ($this->builderCollection->getBuilders() as $builder) {
+            $builder->build($this->attributeHandlerCollection);
+        }
     }
 
-    private function loadPackages(): void
+    public function loadPackages(): void
     {
         $loaderCollection = new LoaderCollection();
 
-        /** @var LoaderInterface $loader */
-        $loader = $this->container->get(LoaderInterface::class);
+        /** @var ApplicationLoaderInterface $loader */
+        $loader = $this->container->get(ApplicationLoaderInterface::class);
         $loader->packages($loaderCollection);
 
         $packageLoaders = $loaderCollection->get();
 
-        $loaderService = new LoaderService($this->container, $this->busBuilder, $this->config);
+        $loaderService = new LoaderService(
+            $this->busBuilder,
+            $this->attributeHandlerCollection,
+            $this->builderCollection,
+        );
 
         foreach ($packageLoaders as $loaderClass) {
             $packageLoader = $this->container->get($loaderClass);
