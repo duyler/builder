@@ -15,10 +15,10 @@ class Action
     private array $require = [];
     private array $bind = [];
     private array $providers = [];
-    private string $argument = '';
-    private ?string $argumentFactory = null;
+    private ?string $argument = null;
+    private null | string | Closure $argumentFactory = null;
     private ?string $contract = null;
-    private string | Closure $rollback = '';
+    private null | string | Closure $rollback = null;
     private bool $externalAccess = false;
     private bool $repeatable = false;
     private bool $continueIfFail = true;
@@ -69,7 +69,7 @@ class Action
         return $this;
     }
 
-    public function argumentFactory(string $argumentFactory): self
+    public function argumentFactory(string| Closure $argumentFactory): self
     {
         $this->argumentFactory = $argumentFactory;
         return $this;
