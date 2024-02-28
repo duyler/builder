@@ -15,13 +15,14 @@ class Action
     private array $require = [];
     private array $bind = [];
     private array $providers = [];
+    private array $alternates = [];
     private ?string $argument = null;
     private null | string | Closure $argumentFactory = null;
     private ?string $contract = null;
     private null | string | Closure $rollback = null;
     private bool $externalAccess = false;
     private bool $repeatable = false;
-    private bool $continueIfFail = true;
+    private ?string $triggeredOn = null;
     private bool $private = false;
     private array $sealed = [];
     private bool $silent = false;
@@ -63,6 +64,12 @@ class Action
         return $this;
     }
 
+    public function alternates(string ...$alternates): self
+    {
+        $this->alternates = $alternates;
+        return $this;
+    }
+
     public function argument(string $argument): self
     {
         $this->argument = $argument;
@@ -99,9 +106,9 @@ class Action
         return $this;
     }
 
-    public function continueIfFail(bool $continueIfFail): self
+    public function triggeredOn(string $triggeredOn): self
     {
-        $this->continueIfFail = $continueIfFail;
+        $this->triggeredOn = $triggeredOn;
         return $this;
     }
 

@@ -31,6 +31,7 @@ class ActionBuilder implements BuilderInterface
                 id: $action->get('id'),
                 handler: $action->get('handler'),
                 required: $action->get('require'),
+                triggeredOn: $action->get('triggeredOn'),
                 bind: $action->get('bind'),
                 providers: $action->get('providers'),
                 argument: $action->get('argument'),
@@ -39,10 +40,10 @@ class ActionBuilder implements BuilderInterface
                 rollback: $action->get('rollback'),
                 externalAccess: $action->get('externalAccess'),
                 repeatable: $action->get('repeatable'),
-                continueIfFail: $action->get('continueIfFail'),
                 private: $action->get('private'),
                 sealed: $action->get('sealed'),
                 silent: $action->get('silent'),
+                alternates: $action->get('alternates'),
             );
 
             /** @var AttributeInterface $attribute */
