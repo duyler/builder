@@ -37,7 +37,7 @@ class Builder
     private BuilderCollection $builderCollection;
     private string $projectRootDir;
 
-    public function __construct()
+    public function __construct(string $configPath = 'config')
     {
         $dir = dirname('__DIR__') . '/';
 
@@ -63,7 +63,7 @@ class Builder
         $configCollector = new ConfigCollector($containerConfig);
 
         $this->config = new FileConfig(
-            configDir: $this->projectRootDir . 'config',
+            configDir: $this->projectRootDir . $configPath,
             env: $env->safeLoad() + $_ENV + [ConfigInterface::PROJECT_ROOT => $this->projectRootDir],
             externalConfigCollector: $configCollector,
         );
@@ -79,11 +79,18 @@ class Builder
             ],
         );
 
+        /** @var  $busConfig BusConfig */
+        $busConfig = $this->container->get(BusConfig::class);
+
         $this->busBuilder = new BusBuilder(
             new BusConfig(
-                bind: $containerConfig->getClassMap(),
-                providers: $containerConfig->getProviders(),
-                definitions: $containerConfig->getDefinitions(),
+                bind: $containerConfig->getClassMap() + $busConfig->bind,
+                providers: $containerConfig->getProviders() + $busConfig->providers,
+                definitions: $containerConfig->getDefinitions() + $busConfig->definitions,
+                saveStateActionContainer: $busConfig->saveStateActionContainer,
+                allowSkipUnresolvedActions: $busConfig->allowSkipUnresolvedActions,
+                autoreset: $busConfig->autoreset,
+                allowCircularCall: $busConfig->allowCircularCall,
             )
         );
 
@@ -128,7 +135,9 @@ class Builder
             }
         };
 
-        $buildPath = $this->projectRootDir . 'build';
+        /** @var  $builderConfig BuilderConfig */
+        $builderConfig = $this->container->get(BuilderConfig::class);
+        $buildPath = $this->projectRootDir . $builderConfig->buildPath;
 
         $iterator = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator($buildPath, FilesystemIterator::SKIP_DOTS),
