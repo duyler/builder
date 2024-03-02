@@ -18,6 +18,8 @@ use Duyler\Framework\Build\Action\ActionBuilder;
 use Duyler\Framework\Build\AttributeHandlerCollection;
 use Duyler\Framework\Build\BuilderCollection;
 use Duyler\Framework\Build\Service\Service;
+use Duyler\Framework\Build\State\StateContext;
+use Duyler\Framework\Build\State\StateHandler;
 use Duyler\Framework\Build\Subscription\Subscription;
 use Duyler\Framework\Loader\LoaderCollection;
 use Duyler\Framework\Loader\ApplicationLoaderInterface;
@@ -127,6 +129,8 @@ class Builder
         new Subscription($this->busBuilder);
         new Action($actionBuilder);
         new Service($this->busBuilder, $this->container);
+        new StateHandler($this->busBuilder, $this->container);
+        new StateContext($this->busBuilder);
 
         $builder = new class () {
             public function collect(string $path): void

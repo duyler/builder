@@ -22,6 +22,7 @@ class Action
     private null | string | Closure $rollback = null;
     private bool $externalAccess = false;
     private bool $repeatable = false;
+    private bool $lock = false;
     private ?string $triggeredOn = null;
     private bool $private = false;
     private array $sealed = [];
@@ -103,6 +104,12 @@ class Action
     public function repeatable(bool $repeatable): self
     {
         $this->repeatable = $repeatable;
+        return $this;
+    }
+
+    public function lock(bool $lock): self
+    {
+        $this->lock = $lock;
         return $this;
     }
 
