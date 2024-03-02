@@ -22,7 +22,7 @@ class Action
     private null | string | Closure $rollback = null;
     private bool $externalAccess = false;
     private bool $repeatable = false;
-    private bool $lock = false;
+    private bool $lock = true;
     private ?string $triggeredOn = null;
     private bool $private = false;
     private array $sealed = [];
