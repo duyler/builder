@@ -40,6 +40,7 @@ class ActionBuilder implements BuilderInterface
                 rollback: $action->get('rollback'),
                 externalAccess: $action->get('externalAccess'),
                 repeatable: $action->get('repeatable'),
+                lock: $action->get('lock'),
                 private: $action->get('private'),
                 sealed: $action->get('sealed'),
                 silent: $action->get('silent'),
