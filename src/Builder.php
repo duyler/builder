@@ -93,6 +93,7 @@ class Builder
                 allowSkipUnresolvedActions: $busConfig->allowSkipUnresolvedActions,
                 autoreset: $busConfig->autoreset,
                 allowCircularCall: $busConfig->allowCircularCall,
+                mode: $busConfig->mode,
             )
         );
 
