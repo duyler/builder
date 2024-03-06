@@ -23,6 +23,7 @@ class Action
     private bool $externalAccess = false;
     private bool $repeatable = false;
     private bool $lock = true;
+    private int $retries = 0;
     private ?string $triggeredOn = null;
     private bool $private = false;
     private array $sealed = [];
@@ -68,6 +69,12 @@ class Action
     public function alternates(string ...$alternates): self
     {
         $this->alternates = $alternates;
+        return $this;
+    }
+
+    public function retries(int $retries): self
+    {
+        $this->retries = $retries;
         return $this;
     }
 
