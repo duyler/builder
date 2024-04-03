@@ -46,6 +46,7 @@ class ActionBuilder implements BuilderInterface
                 silent: $action->get('silent'),
                 alternates: $action->get('alternates'),
                 retries: $action->get('retries'),
+                labels: $action->get('labels'),
             );
 
             /** @var AttributeInterface $attribute */

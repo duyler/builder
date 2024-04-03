@@ -29,6 +29,9 @@ class Action
     private array $sealed = [];
     private bool $silent = false;
 
+    /** @var array<string|int, mixed> */
+    private array $labels = [];
+
     /** @var AttributeInterface[] */
     private array $attributes = [];
 
@@ -141,6 +144,12 @@ class Action
     public function silent(bool $silent): self
     {
         $this->silent = $silent;
+        return $this;
+    }
+
+    public function labels(array $labels): self
+    {
+        $this->labels = $labels;
         return $this;
     }
 
