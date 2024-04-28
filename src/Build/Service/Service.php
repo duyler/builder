@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Duyler\Framework\Build\Service;
 
 use Duyler\DependencyInjection\ContainerInterface;
-use Duyler\EventBus\BusBuilder;
+use Duyler\ActionBus\BusBuilder;
 
 final class Service
 {

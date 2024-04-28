@@ -17,7 +17,7 @@
     },
     "require": {
         "php": "^8.3",
-        "duyler/event-bus": "dev-main",
+        "duyler/action-bus": "dev-main",
         "duyler/dependency-injection": "dev-main",
         "duyler/config": "dev-main",
         "vlucas/phpdotenv": "^v5.6"

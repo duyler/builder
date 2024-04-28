@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Duyler\Framework\Build\Subscription;
 
-use Duyler\EventBus\BusBuilder;
-use Duyler\EventBus\Dto\Subscription as SubscriptionDto;
-use Duyler\EventBus\Enum\ResultStatus;
+use Duyler\ActionBus\BusBuilder;
+use Duyler\ActionBus\Dto\Subscription as SubscriptionDto;
+use Duyler\ActionBus\Enum\ResultStatus;
 
 class Subscription
 {

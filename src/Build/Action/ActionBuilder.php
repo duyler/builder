@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Duyler\Framework\Build\Action;
 
-use Duyler\EventBus\BusBuilder;
+use Duyler\ActionBus\BusBuilder;
 use Duyler\Framework\Build\AttributeHandlerCollection;
 use Duyler\Framework\Build\AttributeInterface;
 use Duyler\Framework\Build\BuilderInterface;
@@ -27,7 +27,7 @@ class ActionBuilder implements BuilderInterface
     public function build(AttributeHandlerCollection $attributeHandlerCollection): void
     {
         foreach ($this->actions as $action) {
-            $busAction = new \Duyler\EventBus\Dto\Action(
+            $busAction = new \Duyler\ActionBus\Dto\Action(
                 id: $action->get('id'),
                 handler: $action->get('handler'),
                 required: $action->get('require'),

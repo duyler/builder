@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Duyler\Framework\Loader;
 
-use Duyler\EventBus\Contract\State\StateHandlerInterface;
-use Duyler\EventBus\Dto\Action;
-use Duyler\EventBus\Dto\Context;
-use Duyler\EventBus\Dto\Subscription;
+use Duyler\ActionBus\Contract\State\StateHandlerInterface;
+use Duyler\ActionBus\Dto\Action;
+use Duyler\ActionBus\Dto\Context;
+use Duyler\ActionBus\Dto\Subscription;
 use Duyler\Framework\Build\AttributeHandlerInterface;
 use Duyler\Framework\Build\BuilderInterface;
 
