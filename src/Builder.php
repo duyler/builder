@@ -10,9 +10,9 @@ use Duyler\Config\FileConfig;
 use Duyler\DependencyInjection\Container;
 use Duyler\DependencyInjection\ContainerInterface as DuylerContainerInterface;
 use Duyler\DependencyInjection\ContainerConfig;
-use Duyler\EventBus\BusBuilder;
-use Duyler\EventBus\BusConfig;
-use Duyler\EventBus\BusInterface;
+use Duyler\ActionBus\BusBuilder;
+use Duyler\ActionBus\BusConfig;
+use Duyler\ActionBus\BusInterface;
 use Duyler\Framework\Build\Action\Action;
 use Duyler\Framework\Build\Action\ActionBuilder;
 use Duyler\Framework\Build\AttributeHandlerCollection;
@@ -59,7 +59,7 @@ class Builder
 
         $containerConfig = new ContainerConfig();
         $containerConfig->withBind([
-            ApplicationLoaderInterface::class => ApplicationLoader::class
+            ApplicationLoaderInterface::class => ApplicationLoader::class,
         ]);
 
         $configCollector = new ConfigCollector($containerConfig);
@@ -96,7 +96,7 @@ class Builder
                 logMaxSize: $busConfig->logMaxSize,
                 mode: $busConfig->mode,
                 resetMode: $busConfig->resetMode,
-            )
+            ),
         );
 
         $this->busBuilder->addSharedService($this->config, [
@@ -149,7 +149,7 @@ class Builder
         $iterator = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator($buildPath, FilesystemIterator::SKIP_DOTS),
             RecursiveIteratorIterator::SELF_FIRST,
-            RecursiveIteratorIterator::CATCH_GET_CHILD
+            RecursiveIteratorIterator::CATCH_GET_CHILD,
         );
 
         foreach ($iterator as $path => $dir) {

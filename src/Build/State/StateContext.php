@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Duyler\Framework\Build\State;
 
-use Duyler\EventBus\BusBuilder;
-use Duyler\EventBus\Dto\Context;
+use Duyler\ActionBus\BusBuilder;
+use Duyler\ActionBus\Dto\Context;
 
 class StateContext
 {
@@ -22,7 +22,7 @@ class StateContext
         self::$busBuilder->addStateContext(
             new Context(
                 $scope,
-            )
+            ),
         );
     }
 }
