@@ -22,7 +22,7 @@ class StateContext
         self::$busBuilder->addStateContext(
             new Context(
                 $scope,
-            )
+            ),
         );
     }
 }

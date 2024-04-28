@@ -24,7 +24,7 @@ class Subscription
                 subjectId: $subjectId,
                 actionId: $actionId,
                 status: $status,
-            )
+            ),
         );
     }
 }
