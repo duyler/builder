@@ -6,11 +6,12 @@ namespace Duyler\Framework\Build\Action;
 
 use Closure;
 use Duyler\Framework\Build\AttributeInterface;
+use UnitEnum;
 
 class Action
 {
     private static ActionBuilder $builder;
-    private string $id;
+    private string|UnitEnum $id;
     private string | Closure $handler;
     private array $require = [];
     private array $bind = [];
@@ -20,11 +21,11 @@ class Action
     private null | string | Closure $argumentFactory = null;
     private ?string $contract = null;
     private null | string | Closure $rollback = null;
-    private bool $externalAccess = false;
+    private bool $externalAccess = true;
     private bool $repeatable = false;
     private bool $lock = true;
     private int $retries = 0;
-    private ?string $triggeredOn = null;
+    private null|string|UnitEnum $triggeredOn = null;
     private bool $private = false;
     private array $sealed = [];
     private bool $silent = false;
@@ -40,7 +41,7 @@ class Action
         static::$builder = $builder;
     }
 
-    public static function build(string $id, string|Closure $handler): self
+    public static function build(string|UnitEnum $id, string|Closure $handler): self
     {
         $action = new self(static::$builder);
         $action->id = $id;
@@ -51,7 +52,7 @@ class Action
         return $action;
     }
 
-    public function require(string ...$require): self
+    public function require(string|UnitEnum ...$require): self
     {
         $this->require = $require;
         return $this;
@@ -69,7 +70,7 @@ class Action
         return $this;
     }
 
-    public function alternates(string ...$alternates): self
+    public function alternates(string|UnitEnum ...$alternates): self
     {
         $this->alternates = $alternates;
         return $this;
@@ -123,7 +124,7 @@ class Action
         return $this;
     }
 
-    public function triggeredOn(string $triggeredOn): self
+    public function triggeredOn(string|UnitEnum $triggeredOn): self
     {
         $this->triggeredOn = $triggeredOn;
         return $this;
@@ -135,7 +136,7 @@ class Action
         return $this;
     }
 
-    public function sealed(array $sealed): self
+    public function sealed(string|UnitEnum ...$sealed): self
     {
         $this->sealed = $sealed;
         return $this;
