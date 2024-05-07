@@ -23,6 +23,6 @@ final class Service
         self::$container->addProviders($providers);
         self::$container->bind($bind);
 
-        self::$busBuilder->addSharedService(self::$container->get($id));
+        self::$busBuilder->addSharedService(self::$container->get($id), $bind);
     }
 }
