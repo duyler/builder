@@ -27,11 +27,11 @@ class ActionBuilder implements BuilderInterface
     public function build(AttributeHandlerCollection $attributeHandlerCollection): void
     {
         foreach ($this->actions as $action) {
-            $busAction = new \Duyler\ActionBus\Dto\Action(
+            $busAction = new \Duyler\ActionBus\Build\Action(
                 id: $action->get('id'),
                 handler: $action->get('handler'),
                 required: $action->get('require'),
-                triggeredOn: $action->get('triggeredOn'),
+                listen: $action->get('listen'),
                 bind: $action->get('bind'),
                 providers: $action->get('providers'),
                 argument: $action->get('argument'),

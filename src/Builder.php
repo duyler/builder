@@ -17,6 +17,7 @@ use Duyler\Framework\Build\Action\Action;
 use Duyler\Framework\Build\Action\ActionBuilder;
 use Duyler\Framework\Build\AttributeHandlerCollection;
 use Duyler\Framework\Build\BuilderCollection;
+use Duyler\Framework\Build\Event\Event;
 use Duyler\Framework\Build\Service\Service;
 use Duyler\Framework\Build\State\StateContext;
 use Duyler\Framework\Build\State\StateHandler;
@@ -134,6 +135,7 @@ class Builder
         new Service($this->busBuilder, $this->container);
         new StateHandler($this->busBuilder, $this->container);
         new StateContext($this->busBuilder);
+        new Event($this->busBuilder);
 
         $builder = new class () {
             public function collect(string $path): void

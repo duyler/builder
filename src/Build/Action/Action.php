@@ -25,7 +25,7 @@ class Action
     private bool $repeatable = false;
     private bool $lock = true;
     private int $retries = 0;
-    private null|string|UnitEnum $triggeredOn = null;
+    private null|string|UnitEnum $listen = null;
     private bool $private = false;
     private array $sealed = [];
     private bool $silent = false;
@@ -124,9 +124,9 @@ class Action
         return $this;
     }
 
-    public function triggeredOn(string|UnitEnum $triggeredOn): self
+    public function listen(string|UnitEnum $listen): self
     {
-        $this->triggeredOn = $triggeredOn;
+        $this->listen = $listen;
         return $this;
     }
 
