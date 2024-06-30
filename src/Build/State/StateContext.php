@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Duyler\Framework\Build\State;
 
+use Duyler\ActionBus\Build\Context;
 use Duyler\ActionBus\BusBuilder;
-use Duyler\ActionBus\Dto\Context;
 
 class StateContext
 {

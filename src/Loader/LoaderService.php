@@ -4,17 +4,18 @@ declare(strict_types=1);
 
 namespace Duyler\Framework\Loader;
 
+use Duyler\ActionBus\Build\Action;
+use Duyler\ActionBus\Build\Context;
+use Duyler\ActionBus\Build\Event;
+use Duyler\ActionBus\Build\Subscription;
 use Duyler\ActionBus\BusBuilder;
 use Duyler\ActionBus\Contract\State\StateHandlerInterface;
-use Duyler\ActionBus\Dto\Action;
-use Duyler\ActionBus\Dto\Context;
-use Duyler\ActionBus\Dto\Subscription;
 use Duyler\Framework\Build\AttributeHandlerCollection;
 use Duyler\Framework\Build\AttributeHandlerInterface;
 use Duyler\Framework\Build\BuilderCollection;
 use Duyler\Framework\Build\BuilderInterface;
 
-readonly class LoaderService implements LoaderServiceInterface
+final readonly class LoaderService implements LoaderServiceInterface
 {
     public function __construct(
         private BusBuilder $busBuilder,
@@ -67,6 +68,12 @@ readonly class LoaderService implements LoaderServiceInterface
     public function addStateContext(Context $context): self
     {
         $this->busBuilder->addStateContext($context);
+        return $this;
+    }
+
+    public function addEvent(Event $event): self
+    {
+        $this->busBuilder->addEvent($event);
         return $this;
     }
 }
