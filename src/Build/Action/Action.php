@@ -14,8 +14,7 @@ class Action
     private string|UnitEnum $id;
     private string | Closure $handler;
     private array $require = [];
-    private array $bind = [];
-    private array $providers = [];
+    private array $config = [];
     private array $alternates = [];
     private ?string $argument = null;
     private null | string | Closure $argumentFactory = null;
@@ -58,15 +57,9 @@ class Action
         return $this;
     }
 
-    public function bind(array $bind): self
+    public function config(array $config): self
     {
-        $this->bind = $bind;
-        return $this;
-    }
-
-    public function providers(array $providers): self
-    {
-        $this->providers = $providers;
+        $this->config = $config;
         return $this;
     }
 

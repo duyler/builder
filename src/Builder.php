@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Duyler\Framework;
 
 use Dotenv\Dotenv;
+use Duyler\ActionBus\Build\SharedService;
 use Duyler\Config\ConfigInterface;
 use Duyler\Config\FileConfig;
 use Duyler\DependencyInjection\Container;
@@ -90,7 +91,6 @@ class Builder
                 bind: $containerConfig->getClassMap() + $busConfig->bind,
                 providers: $containerConfig->getProviders() + $busConfig->providers,
                 definitions: $containerConfig->getDefinitions() + $busConfig->definitions,
-                saveStateActionContainer: $busConfig->saveStateActionContainer,
                 allowSkipUnresolvedActions: $busConfig->allowSkipUnresolvedActions,
                 autoreset: $busConfig->autoreset,
                 allowCircularCall: $busConfig->allowCircularCall,
@@ -100,9 +100,12 @@ class Builder
             ),
         );
 
-        $this->busBuilder->addSharedService($this->config, [
-            ConfigInterface::class => FileConfig::class,
-        ]);
+        $this->busBuilder->addSharedService(new SharedService(
+            class: FileConfig::class,
+            service: $this->config,
+            bind: [ConfigInterface::class => FileConfig::class],
+        ));
+
 
         $this->attributeHandlerCollection = new AttributeHandlerCollection();
         $this->builderCollection = new BuilderCollection();
@@ -114,9 +117,16 @@ class Builder
         return $this->container;
     }
 
-    public function addSharedService(object $object, array $bind = []): void
+    public function addSharedService(object $object, array $bind = [], array $providers = []): void
     {
-        $this->busBuilder->addSharedService($object, $bind);
+        $this->busBuilder->addSharedService(
+            new SharedService(
+                class: $object::class,
+                service: $object,
+                bind: $bind,
+                providers: $providers,
+            ),
+        );
     }
 
     public function build(): BusInterface
@@ -138,7 +148,7 @@ class Builder
         new Event($this->busBuilder);
 
         $builder = new class () {
-            public function collect(string $path): void
+            public function collect(string $path, ConfigInterface $config): void
             {
                 require_once $path;
             }
@@ -157,7 +167,7 @@ class Builder
         foreach ($iterator as $path => $dir) {
             if ($dir->isFile()) {
                 if ('php' === strtolower($dir->getExtension())) {
-                    $builder->collect($path);
+                    $builder->collect($path, $this->config);
                 }
             }
         }

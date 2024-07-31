@@ -7,6 +7,7 @@ namespace Duyler\Framework\Loader;
 use Duyler\ActionBus\Build\Action;
 use Duyler\ActionBus\Build\Context;
 use Duyler\ActionBus\Build\Event;
+use Duyler\ActionBus\Build\SharedService;
 use Duyler\ActionBus\Build\Subscription;
 use Duyler\ActionBus\BusBuilder;
 use Duyler\ActionBus\Contract\State\StateHandlerInterface;
@@ -41,9 +42,9 @@ final readonly class LoaderService implements LoaderServiceInterface
         return $this;
     }
 
-    public function addSharedService(object $service, array $bind = []): self
+    public function addSharedService(SharedService $service): self
     {
-        $this->busBuilder->addSharedService($service, $bind);
+        $this->busBuilder->addSharedService($service);
         return $this;
     }
 
