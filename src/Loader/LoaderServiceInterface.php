@@ -7,6 +7,7 @@ namespace Duyler\Framework\Loader;
 use Duyler\ActionBus\Build\Action;
 use Duyler\ActionBus\Build\Context;
 use Duyler\ActionBus\Build\Event;
+use Duyler\ActionBus\Build\SharedService;
 use Duyler\ActionBus\Build\Subscription;
 use Duyler\ActionBus\Contract\State\StateHandlerInterface;
 use Duyler\Framework\Build\AttributeHandlerInterface;
@@ -20,7 +21,7 @@ interface LoaderServiceInterface
 
     public function addStateHandler(StateHandlerInterface $stateHandler): self;
 
-    public function addSharedService(object $service, array $bind = []): self;
+    public function addSharedService(SharedService $service): self;
 
     public function addSubscription(Subscription $subscription): self;
 

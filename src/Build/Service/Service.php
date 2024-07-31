@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Duyler\Framework\Build\Service;
 
+use Duyler\ActionBus\Build\SharedService;
 use Duyler\DependencyInjection\ContainerInterface;
 use Duyler\ActionBus\BusBuilder;
 
@@ -23,6 +24,11 @@ final class Service
         self::$container->addProviders($providers);
         self::$container->bind($bind);
 
-        self::$busBuilder->addSharedService(self::$container->get($id), $bind);
+        self::$busBuilder->addSharedService(new SharedService(
+            class: $id,
+            service: self::$container->get($id),
+            bind: $bind,
+            providers: $providers,
+        ));
     }
 }
