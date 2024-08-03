@@ -96,7 +96,6 @@ class Builder
                 allowCircularCall: $busConfig->allowCircularCall,
                 logMaxSize: $busConfig->logMaxSize,
                 mode: $busConfig->mode,
-                resetMode: $busConfig->resetMode,
             ),
         );
 
