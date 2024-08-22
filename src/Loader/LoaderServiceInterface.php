@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Duyler\Framework\Loader;
+namespace Duyler\Builder\Loader;
 
 use Duyler\ActionBus\Build\Action;
 use Duyler\ActionBus\Build\Context;
@@ -10,8 +10,8 @@ use Duyler\ActionBus\Build\Event;
 use Duyler\ActionBus\Build\SharedService;
 use Duyler\ActionBus\Build\Subscription;
 use Duyler\ActionBus\Contract\State\StateHandlerInterface;
-use Duyler\Framework\Build\AttributeHandlerInterface;
-use Duyler\Framework\Build\BuilderInterface;
+use Duyler\Builder\Build\AttributeHandlerInterface;
+use Duyler\Builder\Build\BuilderInterface;
 
 interface LoaderServiceInterface
 {

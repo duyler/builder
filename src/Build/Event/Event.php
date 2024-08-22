@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Duyler\Framework\Build\Event;
+namespace Duyler\Builder\Build\Event;
 
 use Duyler\ActionBus\BusBuilder;
 use UnitEnum;

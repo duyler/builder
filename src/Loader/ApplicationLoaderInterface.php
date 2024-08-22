@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Duyler\Framework\Loader;
+namespace Duyler\Builder\Loader;
 
 interface ApplicationLoaderInterface
 {

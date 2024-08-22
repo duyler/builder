@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Duyler\Framework;
+namespace Duyler\Builder;
 
 use Dotenv\Dotenv;
 use Duyler\ActionBus\Build\SharedService;
@@ -14,18 +14,18 @@ use Duyler\DependencyInjection\ContainerConfig;
 use Duyler\ActionBus\BusBuilder;
 use Duyler\ActionBus\BusConfig;
 use Duyler\ActionBus\BusInterface;
-use Duyler\Framework\Build\Action\Action;
-use Duyler\Framework\Build\Action\ActionBuilder;
-use Duyler\Framework\Build\AttributeHandlerCollection;
-use Duyler\Framework\Build\BuilderCollection;
-use Duyler\Framework\Build\Event\Event;
-use Duyler\Framework\Build\Service\Service;
-use Duyler\Framework\Build\State\StateContext;
-use Duyler\Framework\Build\State\StateHandler;
-use Duyler\Framework\Build\Subscription\Subscription;
-use Duyler\Framework\Loader\LoaderCollection;
-use Duyler\Framework\Loader\ApplicationLoaderInterface;
-use Duyler\Framework\Loader\LoaderService;
+use Duyler\Builder\Build\Action\Action;
+use Duyler\Builder\Build\Action\ActionBuilder;
+use Duyler\Builder\Build\AttributeHandlerCollection;
+use Duyler\Builder\Build\BuilderCollection;
+use Duyler\Builder\Build\Event\Event;
+use Duyler\Builder\Build\Service\Service;
+use Duyler\Builder\Build\State\StateContext;
+use Duyler\Builder\Build\State\StateHandler;
+use Duyler\Builder\Build\Subscription\Subscription;
+use Duyler\Builder\Loader\LoaderCollection;
+use Duyler\Builder\Loader\ApplicationLoaderInterface;
+use Duyler\Builder\Loader\LoaderService;
 use FilesystemIterator;
 use LogicException;
 use Psr\Container\ContainerInterface;
@@ -148,7 +148,7 @@ final class Builder
         new StateContext($this->busBuilder);
         new Event($this->busBuilder);
 
-        $builder = new class () {
+        $builder = new class {
             public function collect(string $path, ConfigInterface $config): void
             {
                 require_once $path;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Duyler\Framework\Loader;
+namespace Duyler\Builder\Loader;
 
 use Duyler\ActionBus\Build\Action;
 use Duyler\ActionBus\Build\Context;
@@ -11,10 +11,10 @@ use Duyler\ActionBus\Build\SharedService;
 use Duyler\ActionBus\Build\Subscription;
 use Duyler\ActionBus\BusBuilder;
 use Duyler\ActionBus\Contract\State\StateHandlerInterface;
-use Duyler\Framework\Build\AttributeHandlerCollection;
-use Duyler\Framework\Build\AttributeHandlerInterface;
-use Duyler\Framework\Build\BuilderCollection;
-use Duyler\Framework\Build\BuilderInterface;
+use Duyler\Builder\Build\AttributeHandlerCollection;
+use Duyler\Builder\Build\AttributeHandlerInterface;
+use Duyler\Builder\Build\BuilderCollection;
+use Duyler\Builder\Build\BuilderInterface;
 
 final readonly class LoaderService implements LoaderServiceInterface
 {

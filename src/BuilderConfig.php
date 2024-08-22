@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Duyler\Framework;
+namespace Duyler\Builder;
 
 use Duyler\ActionBus\Enum\Mode;
 
