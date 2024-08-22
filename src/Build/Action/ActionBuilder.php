@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Duyler\Framework\Build\Action;
+namespace Duyler\Builder\Build\Action;
 
 use Duyler\ActionBus\BusBuilder;
-use Duyler\Framework\Build\AttributeHandlerCollection;
-use Duyler\Framework\Build\AttributeInterface;
-use Duyler\Framework\Build\BuilderInterface;
+use Duyler\Builder\Build\AttributeHandlerCollection;
+use Duyler\Builder\Build\AttributeInterface;
+use Duyler\Builder\Build\BuilderInterface;
 
 class ActionBuilder implements BuilderInterface
 {

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Duyler\Framework\Build\Action;
+namespace Duyler\Builder\Build\Action;
 
 use Closure;
-use Duyler\Framework\Build\AttributeInterface;
+use Duyler\Builder\Build\AttributeInterface;
 use UnitEnum;
 
 class Action

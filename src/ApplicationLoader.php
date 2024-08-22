@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Duyler\Framework;
+namespace Duyler\Builder;
 
-use Duyler\Framework\Loader\LoaderCollection;
-use Duyler\Framework\Loader\ApplicationLoaderInterface;
+use Duyler\Builder\Loader\LoaderCollection;
+use Duyler\Builder\Loader\ApplicationLoaderInterface;
 use Override;
 
 class ApplicationLoader implements ApplicationLoaderInterface

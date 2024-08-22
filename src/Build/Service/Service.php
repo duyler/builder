@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Duyler\Framework\Build\Service;
+namespace Duyler\Builder\Build\Service;
 
 use Duyler\ActionBus\Build\SharedService;
 use Duyler\DependencyInjection\ContainerInterface;

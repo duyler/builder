@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Duyler\Framework;
+namespace Duyler\Builder;
 
 use Dotenv\Dotenv;
 use Duyler\ActionBus\Build\SharedService;
@@ -14,25 +14,25 @@ use Duyler\DependencyInjection\ContainerConfig;
 use Duyler\ActionBus\BusBuilder;
 use Duyler\ActionBus\BusConfig;
 use Duyler\ActionBus\BusInterface;
-use Duyler\Framework\Build\Action\Action;
-use Duyler\Framework\Build\Action\ActionBuilder;
-use Duyler\Framework\Build\AttributeHandlerCollection;
-use Duyler\Framework\Build\BuilderCollection;
-use Duyler\Framework\Build\Event\Event;
-use Duyler\Framework\Build\Service\Service;
-use Duyler\Framework\Build\State\StateContext;
-use Duyler\Framework\Build\State\StateHandler;
-use Duyler\Framework\Build\Subscription\Subscription;
-use Duyler\Framework\Loader\LoaderCollection;
-use Duyler\Framework\Loader\ApplicationLoaderInterface;
-use Duyler\Framework\Loader\LoaderService;
+use Duyler\Builder\Build\Action\Action;
+use Duyler\Builder\Build\Action\ActionBuilder;
+use Duyler\Builder\Build\AttributeHandlerCollection;
+use Duyler\Builder\Build\BuilderCollection;
+use Duyler\Builder\Build\Event\Event;
+use Duyler\Builder\Build\Service\Service;
+use Duyler\Builder\Build\State\StateContext;
+use Duyler\Builder\Build\State\StateHandler;
+use Duyler\Builder\Build\Subscription\Subscription;
+use Duyler\Builder\Loader\LoaderCollection;
+use Duyler\Builder\Loader\ApplicationLoaderInterface;
+use Duyler\Builder\Loader\LoaderService;
 use FilesystemIterator;
 use LogicException;
 use Psr\Container\ContainerInterface;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
-class Builder
+final class Builder
 {
     private BusBuilder $busBuilder;
     private FileConfig $config;
@@ -41,7 +41,7 @@ class Builder
     private BuilderCollection $builderCollection;
     private string $projectRootDir;
 
-    public function __construct(string $configPath = 'config')
+    public function __construct(private BuilderConfig $builderConfig = new BuilderConfig())
     {
         $dir = dirname('__DIR__') . '/';
 
@@ -67,7 +67,7 @@ class Builder
         $configCollector = new ConfigCollector($containerConfig);
 
         $this->config = new FileConfig(
-            configDir: $this->projectRootDir . $configPath,
+            configDir: $this->projectRootDir . $this->builderConfig->configPath,
             env: $env->safeLoad() + $_ENV + [ConfigInterface::PROJECT_ROOT => $this->projectRootDir],
             externalConfigCollector: $configCollector,
         );
@@ -95,7 +95,9 @@ class Builder
                 autoreset: $busConfig->autoreset,
                 allowCircularCall: $busConfig->allowCircularCall,
                 logMaxSize: $busConfig->logMaxSize,
-                mode: $busConfig->mode,
+                mode: $this->builderConfig->overrideBusMode === null
+                    ? $busConfig->mode
+                    : $this->builderConfig->overrideBusMode,
             ),
         );
 
@@ -146,16 +148,14 @@ class Builder
         new StateContext($this->busBuilder);
         new Event($this->busBuilder);
 
-        $builder = new class () {
+        $builder = new class {
             public function collect(string $path, ConfigInterface $config): void
             {
                 require_once $path;
             }
         };
 
-        /** @var  $builderConfig BuilderConfig */
-        $builderConfig = $this->container->get(BuilderConfig::class);
-        $buildPath = $this->projectRootDir . $builderConfig->buildPath;
+        $buildPath = $this->projectRootDir . $this->builderConfig->buildPath;
 
         $iterator = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator($buildPath, FilesystemIterator::SKIP_DOTS),

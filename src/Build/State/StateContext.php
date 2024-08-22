@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Duyler\Framework\Build\State;
+namespace Duyler\Builder\Build\State;
 
 use Duyler\ActionBus\Build\Context;
 use Duyler\ActionBus\BusBuilder;
