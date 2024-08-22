@@ -32,7 +32,7 @@ use Psr\Container\ContainerInterface;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
-class Builder
+final class Builder
 {
     private BusBuilder $busBuilder;
     private FileConfig $config;
@@ -41,7 +41,7 @@ class Builder
     private BuilderCollection $builderCollection;
     private string $projectRootDir;
 
-    public function __construct(string $configPath = 'config')
+    public function __construct(private BuilderConfig $builderConfig = new BuilderConfig())
     {
         $dir = dirname('__DIR__') . '/';
 
@@ -67,7 +67,7 @@ class Builder
         $configCollector = new ConfigCollector($containerConfig);
 
         $this->config = new FileConfig(
-            configDir: $this->projectRootDir . $configPath,
+            configDir: $this->projectRootDir . $this->builderConfig->configPath,
             env: $env->safeLoad() + $_ENV + [ConfigInterface::PROJECT_ROOT => $this->projectRootDir],
             externalConfigCollector: $configCollector,
         );
@@ -95,7 +95,9 @@ class Builder
                 autoreset: $busConfig->autoreset,
                 allowCircularCall: $busConfig->allowCircularCall,
                 logMaxSize: $busConfig->logMaxSize,
-                mode: $busConfig->mode,
+                mode: $this->builderConfig->overrideBusMode === null
+                    ? $busConfig->mode
+                    : $this->builderConfig->overrideBusMode,
             ),
         );
 
@@ -153,9 +155,7 @@ class Builder
             }
         };
 
-        /** @var  $builderConfig BuilderConfig */
-        $builderConfig = $this->container->get(BuilderConfig::class);
-        $buildPath = $this->projectRootDir . $builderConfig->buildPath;
+        $buildPath = $this->projectRootDir . $this->builderConfig->buildPath;
 
         $iterator = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator($buildPath, FilesystemIterator::SKIP_DOTS),
