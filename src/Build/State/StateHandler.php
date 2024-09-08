@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Duyler\Builder\Build\State;
 
 use Duyler\DependencyInjection\ContainerInterface;
-use Duyler\ActionBus\BusBuilder;
+use Duyler\EventBus\BusBuilder;
 
 class StateHandler
 {
