@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Duyler\Builder;
 
-use Duyler\ActionBus\Enum\Mode;
+use Duyler\EventBus\Enum\Mode;
 
 readonly class BuilderConfig
 {

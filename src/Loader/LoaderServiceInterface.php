@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Duyler\Builder\Loader;
 
-use Duyler\ActionBus\Build\Action;
-use Duyler\ActionBus\Build\Context;
-use Duyler\ActionBus\Build\Event;
-use Duyler\ActionBus\Build\SharedService;
-use Duyler\ActionBus\Build\Subscription;
-use Duyler\ActionBus\Contract\State\StateHandlerInterface;
+use Duyler\EventBus\Build\Action;
+use Duyler\EventBus\Build\Context;
+use Duyler\EventBus\Build\Event;
+use Duyler\EventBus\Build\SharedService;
+use Duyler\EventBus\Build\Subscription;
+use Duyler\EventBus\Contract\State\StateHandlerInterface;
 use Duyler\Builder\Build\AttributeHandlerInterface;
 use Duyler\Builder\Build\BuilderInterface;
 

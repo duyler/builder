@@ -1,7 +1,7 @@
 {
     "name": "duyler/builder",
     "type": "library",
-    "description": "Duyler framework",
+    "description": "Duyler application builder",
     "license": "MIT",
     "keywords": [
         "framework"
@@ -13,11 +13,11 @@
         }
     ],
     "support": {
-        "docs": "https://duyler.org/docs/framework/"
+        "docs": "https://duyler.org/en/docs/builder/"
     },
     "require": {
         "php": "^8.3",
-        "duyler/action-bus": "dev-main",
+        "duyler/event-bus": "dev-main",
         "duyler/dependency-injection": "dev-main",
         "duyler/config": "dev-main",
         "vlucas/phpdotenv": "^v5.6"
