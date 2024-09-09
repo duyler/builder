@@ -13,10 +13,13 @@ class ActionBuilder implements BuilderInterface
 {
     /** @var Action[] */
     private array $actions = [];
+    private ActionConfigResolver $actionConfigResolver;
 
     public function __construct(
         private BusBuilder $busBuilder,
-    ) {}
+    ) {
+        $this->actionConfigResolver = new ActionConfigResolver();
+    }
 
     public function addAction(Action $action): self
     {
@@ -27,12 +30,16 @@ class ActionBuilder implements BuilderInterface
     public function build(AttributeHandlerCollection $attributeHandlerCollection): void
     {
         foreach ($this->actions as $action) {
+            $actionConfig = $this->actionConfigResolver->resolve($action->get('config'));
+
             $busAction = new \Duyler\EventBus\Build\Action(
                 id: $action->get('id'),
                 handler: $action->get('handler'),
                 required: $action->get('require'),
                 listen: $action->get('listen'),
-                config: $action->get('config'),
+                bind: $actionConfig->bind,
+                providers: $actionConfig->providers,
+                definitions: $actionConfig->definitions,
                 argument: $action->get('argument'),
                 argumentFactory: $action->get('argumentFactory'),
                 contract: $action->get('contract'),
