@@ -8,7 +8,7 @@ use Duyler\EventBus\Build\Action;
 use Duyler\EventBus\Build\Context;
 use Duyler\EventBus\Build\Event;
 use Duyler\EventBus\Build\SharedService;
-use Duyler\EventBus\Build\Subscription;
+use Duyler\EventBus\Build\Trigger;
 use Duyler\EventBus\BusBuilder;
 use Duyler\EventBus\Contract\State\StateHandlerInterface;
 use Duyler\Builder\Build\AttributeHandlerCollection;
@@ -48,9 +48,9 @@ final readonly class LoaderService implements LoaderServiceInterface
         return $this;
     }
 
-    public function addSubscription(Subscription $subscription): self
+    public function addTrigger(Trigger $trigger): self
     {
-        $this->busBuilder->addSubscription($subscription);
+        $this->busBuilder->addTrigger($trigger);
         return $this;
     }
 
