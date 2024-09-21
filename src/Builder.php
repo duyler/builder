@@ -5,15 +5,6 @@ declare(strict_types=1);
 namespace Duyler\Builder;
 
 use Dotenv\Dotenv;
-use Duyler\EventBus\Build\SharedService;
-use Duyler\Config\ConfigInterface;
-use Duyler\Config\FileConfig;
-use Duyler\DependencyInjection\Container;
-use Duyler\DependencyInjection\ContainerInterface as DuylerContainerInterface;
-use Duyler\DependencyInjection\ContainerConfig;
-use Duyler\EventBus\BusBuilder;
-use Duyler\EventBus\BusConfig;
-use Duyler\EventBus\BusInterface;
 use Duyler\Builder\Build\Action\Action;
 use Duyler\Builder\Build\Action\ActionBuilder;
 use Duyler\Builder\Build\AttributeHandlerCollection;
@@ -22,10 +13,19 @@ use Duyler\Builder\Build\Event\Event;
 use Duyler\Builder\Build\Service\Service;
 use Duyler\Builder\Build\State\StateContext;
 use Duyler\Builder\Build\State\StateHandler;
-use Duyler\Builder\Build\Subscription\Subscription;
-use Duyler\Builder\Loader\LoaderCollection;
+use Duyler\Builder\Build\Trigger\Trigger;
 use Duyler\Builder\Loader\ApplicationLoaderInterface;
+use Duyler\Builder\Loader\LoaderCollection;
 use Duyler\Builder\Loader\LoaderService;
+use Duyler\Config\ConfigInterface;
+use Duyler\Config\FileConfig;
+use Duyler\DependencyInjection\Container;
+use Duyler\DependencyInjection\ContainerConfig;
+use Duyler\DependencyInjection\ContainerInterface as DuylerContainerInterface;
+use Duyler\EventBus\Build\SharedService;
+use Duyler\EventBus\BusBuilder;
+use Duyler\EventBus\BusConfig;
+use Duyler\EventBus\BusInterface;
 use FilesystemIterator;
 use LogicException;
 use Psr\Container\ContainerInterface;
@@ -141,7 +141,7 @@ final class Builder
             $this->busBuilder,
         );
 
-        new Subscription($this->busBuilder);
+        new Trigger($this->busBuilder);
         new Action($actionBuilder);
         new Service($this->busBuilder, $this->container);
         new StateHandler($this->busBuilder, $this->container);

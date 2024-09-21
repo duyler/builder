@@ -8,7 +8,7 @@ use Duyler\EventBus\Build\Action;
 use Duyler\EventBus\Build\Context;
 use Duyler\EventBus\Build\Event;
 use Duyler\EventBus\Build\SharedService;
-use Duyler\EventBus\Build\Subscription;
+use Duyler\EventBus\Build\Trigger;
 use Duyler\EventBus\Contract\State\StateHandlerInterface;
 use Duyler\Builder\Build\AttributeHandlerInterface;
 use Duyler\Builder\Build\BuilderInterface;
@@ -23,7 +23,7 @@ interface LoaderServiceInterface
 
     public function addSharedService(SharedService $service): self;
 
-    public function addSubscription(Subscription $subscription): self;
+    public function addSubscription(Trigger $subscription): self;
 
     public function addAttributeHandler(AttributeHandlerInterface $attributeHandler): self;
 
