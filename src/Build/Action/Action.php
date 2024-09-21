@@ -24,7 +24,7 @@ class Action
     private bool $repeatable = false;
     private bool $lock = true;
     private int $retries = 0;
-    private null|string|UnitEnum $listen = null;
+    private array $listen = [];
     private bool $private = false;
     private array $sealed = [];
     private bool $silent = false;
@@ -117,7 +117,7 @@ class Action
         return $this;
     }
 
-    public function listen(string|UnitEnum $listen): self
+    public function listen(string|UnitEnum ...$listen): self
     {
         $this->listen = $listen;
         return $this;
