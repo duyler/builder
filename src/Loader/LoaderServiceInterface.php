@@ -23,7 +23,7 @@ interface LoaderServiceInterface
 
     public function addSharedService(SharedService $service): self;
 
-    public function addSubscription(Trigger $subscription): self;
+    public function addTrigger(Trigger $trigger): self;
 
     public function addAttributeHandler(AttributeHandlerInterface $attributeHandler): self;
 

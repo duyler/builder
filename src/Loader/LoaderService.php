@@ -48,9 +48,9 @@ final readonly class LoaderService implements LoaderServiceInterface
         return $this;
     }
 
-    public function addSubscription(Trigger $subscription): self
+    public function addTrigger(Trigger $trigger): self
     {
-        $this->busBuilder->addSubscription($subscription);
+        $this->busBuilder->addTrigger($trigger);
         return $this;
     }
 
