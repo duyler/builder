@@ -22,10 +22,12 @@ use Duyler\Config\FileConfig;
 use Duyler\DependencyInjection\Container;
 use Duyler\DependencyInjection\ContainerConfig;
 use Duyler\DependencyInjection\ContainerInterface as DuylerContainerInterface;
+use Duyler\EventBus\Build\Context;
 use Duyler\EventBus\Build\SharedService;
 use Duyler\EventBus\BusBuilder;
 use Duyler\EventBus\BusConfig;
 use Duyler\EventBus\BusInterface;
+use Duyler\EventBus\Contract\State\StateHandlerInterface;
 use FilesystemIterator;
 use LogicException;
 use Psr\Container\ContainerInterface;
@@ -118,7 +120,7 @@ final class Builder
         return $this->container;
     }
 
-    public function addSharedService(object $object, array $bind = [], array $providers = []): void
+    public function addSharedService(object $object, array $bind = [], array $providers = []): Builder
     {
         $this->busBuilder->addSharedService(
             new SharedService(
@@ -128,6 +130,45 @@ final class Builder
                 providers: $providers,
             ),
         );
+        return $this;
+    }
+
+    public function addStateHandler(StateHandlerInterface $stateHandler): Builder
+    {
+        $this->busBuilder->addStateHandler($stateHandler);
+        return $this;
+    }
+
+    public function addStateContext(Context $context): Builder
+    {
+        $this->busBuilder->addStateContext($context);
+
+        return $this;
+    }
+
+    public function addEvent(\Duyler\EventBus\Build\Event $event): Builder
+    {
+        $this->events[$event->id] = $event;
+
+        return $this;
+    }
+
+    public function addAction(\Duyler\EventBus\Build\Action $action): Builder
+    {
+        $this->busBuilder->addAction($action);
+        return $this;
+    }
+
+    public function doAction(\Duyler\EventBus\Build\Action $action): Builder
+    {
+        $this->busBuilder->doAction($action);
+        return $this;
+    }
+
+    public function addTrigger(\Duyler\EventBus\Build\Trigger $trigger): Builder
+    {
+        $this->busBuilder->addTrigger($trigger);
+        return $this;
     }
 
     public function build(): BusInterface
@@ -135,7 +176,7 @@ final class Builder
         return $this->busBuilder->build();
     }
 
-    public function loadBuild(): void
+    public function loadBuild(): Builder
     {
         $actionBuilder = new ActionBuilder(
             $this->busBuilder,
@@ -155,18 +196,22 @@ final class Builder
             }
         };
 
-        $buildPath = $this->projectRootDir . $this->builderConfig->buildPath;
+        $iterators = [];
 
-        $iterator = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator($buildPath, FilesystemIterator::SKIP_DOTS),
-            RecursiveIteratorIterator::SELF_FIRST,
-            RecursiveIteratorIterator::CATCH_GET_CHILD,
-        );
+        foreach ($this->builderConfig->buildPaths as $buildPath) {
+            $iterators[] = new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator($this->projectRootDir . $buildPath, FilesystemIterator::SKIP_DOTS),
+                RecursiveIteratorIterator::SELF_FIRST,
+                RecursiveIteratorIterator::CATCH_GET_CHILD,
+            );
+        }
 
-        foreach ($iterator as $path => $dir) {
-            if ($dir->isFile()) {
-                if ('php' === strtolower($dir->getExtension())) {
-                    $builder->collect($path, $this->config);
+        foreach ($iterators as $iterator) {
+            foreach ($iterator as $path => $dir) {
+                if ($dir->isFile()) {
+                    if ('php' === strtolower($dir->getExtension())) {
+                        $builder->collect($path, $this->config);
+                    }
                 }
             }
         }
@@ -176,9 +221,11 @@ final class Builder
         foreach ($this->builderCollection->getBuilders() as $builder) {
             $builder->build($this->attributeHandlerCollection);
         }
+
+        return $this;
     }
 
-    public function loadPackages(): void
+    public function loadPackages(): Builder
     {
         $loaderCollection = new LoaderCollection();
 
@@ -198,5 +245,7 @@ final class Builder
             $packageLoader = $this->container->get($loaderClass);
             $packageLoader->load($loaderService);
         }
+
+        return $this;
     }
 }
