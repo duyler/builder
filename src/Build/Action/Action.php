@@ -28,6 +28,7 @@ class Action
     private bool $private = false;
     private array $sealed = [];
     private bool $silent = false;
+    private bool $flush = false;
 
     /** @var array<string|int, mixed> */
     private array $labels = [];
@@ -99,19 +100,19 @@ class Action
         return $this;
     }
 
-    public function externalAccess(bool $externalAccess): self
+    public function externalAccess(bool $externalAccess = true): self
     {
         $this->externalAccess = $externalAccess;
         return $this;
     }
 
-    public function repeatable(bool $repeatable): self
+    public function repeatable(bool $repeatable = true): self
     {
         $this->repeatable = $repeatable;
         return $this;
     }
 
-    public function lock(bool $lock): self
+    public function lock(bool $lock = true): self
     {
         $this->lock = $lock;
         return $this;
@@ -123,7 +124,7 @@ class Action
         return $this;
     }
 
-    public function private(bool $private): self
+    public function private(bool $private = true): self
     {
         $this->private = $private;
         return $this;
@@ -135,7 +136,7 @@ class Action
         return $this;
     }
 
-    public function silent(bool $silent): self
+    public function silent(bool $silent = true): self
     {
         $this->silent = $silent;
         return $this;
@@ -150,6 +151,12 @@ class Action
     public function attributes(AttributeInterface ...$attributes): self
     {
         $this->attributes = $attributes;
+        return $this;
+    }
+
+    public function flush(bool $flush = true): self
+    {
+        $this->flush = $flush;
         return $this;
     }
 
