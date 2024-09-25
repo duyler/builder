@@ -71,6 +71,7 @@ final class Builder
         $this->config = new FileConfig(
             configDir: $this->projectRootDir . $this->builderConfig->configPath,
             env: $env->safeLoad() + $_ENV + [ConfigInterface::PROJECT_ROOT => $this->projectRootDir],
+            root: $this->projectRootDir,
             externalConfigCollector: $configCollector,
         );
 
