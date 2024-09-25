@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Duyler\Builder;
 
 use Duyler\Config\ConfigCollectorInterface;
-use Duyler\DependencyInjection\Definition;
-use Duyler\DependencyInjection\ContainerConfig;
-use Duyler\DependencyInjection\Provider\ProviderInterface;
+use Duyler\DI\Definition;
+use Duyler\DI\ContainerConfig;
+use Duyler\DI\Provider\ProviderInterface;
 use Override;
 
 readonly class ConfigCollector implements ConfigCollectorInterface

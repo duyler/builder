@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Duyler\Builder\Build\Action;
 
-use Duyler\DependencyInjection\Definition;
-use Duyler\DependencyInjection\Provider\ProviderInterface;
+use Duyler\DI\Definition;
+use Duyler\DI\Provider\ProviderInterface;
 
 final class ActionConfigResolver
 {
