@@ -8,12 +8,13 @@ use Closure;
 use Duyler\Builder\Build\AttributeInterface;
 use UnitEnum;
 
-class Action
+final class Action
 {
     private static ActionBuilder $builder;
     private string|UnitEnum $id;
     private string | Closure $handler;
     private array $require = [];
+    private array $triggerFor = [];
     private array $config = [];
     private array $alternates = [];
     private ?string $argument = null;
@@ -41,26 +42,38 @@ class Action
         static::$builder = $builder;
     }
 
-    public static function build(string|UnitEnum $id, string|Closure $handler): self
+    public static function create(null|string|UnitEnum $id = null): self
     {
         $action = new self(static::$builder);
-        $action->id = $id;
-        $action->handler = $handler;
+        $action->id = $id ?? 'anonymous@' . rand() . microtime(true);
+        $action->handler = function () {};
 
         self::$builder->addAction($action);
 
         return $action;
     }
 
-    public function require(string|UnitEnum ...$require): self
+    public function handler(string|Closure $handler): self
     {
-        $this->require = $require;
+        $this->handler = $handler;
+        return $this;
+    }
+
+    public function require(string|UnitEnum ...$actionId): self
+    {
+        $this->require = $actionId;
         return $this;
     }
 
     public function config(array $config): self
     {
         $this->config = $config;
+        return $this;
+    }
+
+    public function triggerFor(string|UnitEnum ...$actionId): self
+    {
+        $this->triggerFor = $actionId;
         return $this;
     }
 

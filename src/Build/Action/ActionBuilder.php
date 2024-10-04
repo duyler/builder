@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Duyler\Builder\Build\Action;
 
+use Duyler\EventBus\Build\Trigger;
 use Duyler\EventBus\BusBuilder;
 use Duyler\Builder\Build\AttributeHandlerCollection;
 use Duyler\Builder\Build\AttributeInterface;
@@ -53,6 +54,7 @@ class ActionBuilder implements BuilderInterface
                 alternates: $action->get('alternates'),
                 retries: $action->get('retries'),
                 labels: $action->get('labels'),
+                flush: $action->get('flush'),
             );
 
             /** @var AttributeInterface $attribute */
@@ -61,6 +63,15 @@ class ActionBuilder implements BuilderInterface
                 foreach ($attributeHandlers as $attributeHandler) {
                     $attribute->accept($attributeHandler, $busAction);
                 }
+            }
+
+            foreach ($action->get('triggerFor') as $trigger) {
+                $this->busBuilder->addTrigger(
+                    new Trigger(
+                        $action->get('id'),
+                        $trigger,
+                    ),
+                );
             }
 
             $this->busBuilder->addAction($busAction);
