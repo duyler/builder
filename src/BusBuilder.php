@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Duyler\Builder;
 
+use Duyler\Builder\Config\PackagesConfig;
+use Duyler\DI\ContainerInterface;
 use Duyler\EventBus\Build\Action;
 use Duyler\EventBus\Build\Event;
 use Duyler\EventBus\Build\Trigger;
@@ -16,6 +18,7 @@ final class BusBuilder
 {
     public function __construct(
         private EventBusBuilder $busBuilder,
+        private ContainerInterface $container,
     ) {}
 
     public function addSharedService(object $object, array $bind = [], array $providers = []): BusBuilder
@@ -46,7 +49,7 @@ final class BusBuilder
 
     public function addEvent(Event $event): BusBuilder
     {
-        $this->events[$event->id] = $event;
+        $this->busBuilder->addEvent($event);
 
         return $this;
     }
@@ -67,5 +70,12 @@ final class BusBuilder
     {
         $this->busBuilder->addTrigger($trigger);
         return $this;
+    }
+
+    public function loadPackages(?PackagesConfig $packagesConfig = null): BuildLoader
+    {
+        $packageLoader = new PackageLoader($this->busBuilder, $this->container);
+
+        return $packageLoader->loadPackages($packagesConfig);
     }
 }
