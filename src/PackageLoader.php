@@ -11,8 +11,9 @@ use Duyler\Builder\Loader\LoaderService;
 use Duyler\Builder\Loader\PackageLoaderInterface;
 use Duyler\DI\ContainerInterface;
 use Duyler\EventBus\BusBuilder as EventBusBuilder;
+use Duyler\EventBus\BusInterface;
 
-class PackageLoader
+final class PackageLoader
 {
     public function __construct(
         private EventBusBuilder $busBuilder,
@@ -43,5 +44,10 @@ class PackageLoader
         }
 
         return new BuildLoader($this->busBuilder, $this->container);
+    }
+
+    public function build(): BusInterface
+    {
+        return $this->busBuilder->build();
     }
 }

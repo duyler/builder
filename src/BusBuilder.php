@@ -11,6 +11,7 @@ use Duyler\EventBus\Build\Event;
 use Duyler\EventBus\Build\Trigger;
 use Duyler\EventBus\Build\Context;
 use Duyler\EventBus\Build\SharedService;
+use Duyler\EventBus\BusInterface;
 use Duyler\EventBus\Contract\State\StateHandlerInterface;
 use Duyler\EventBus\BusBuilder as EventBusBuilder;
 
@@ -77,5 +78,10 @@ final class BusBuilder
         $packageLoader = new PackageLoader($this->busBuilder, $this->container);
 
         return $packageLoader->loadPackages($packagesConfig);
+    }
+
+    public function build(): BusInterface
+    {
+        return $this->busBuilder->build();
     }
 }

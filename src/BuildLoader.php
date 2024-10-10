@@ -22,7 +22,7 @@ use FilesystemIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
-class BuildLoader
+final class BuildLoader
 {
     public function __construct(
         private EventBusBuilder $busBuilder,

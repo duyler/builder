@@ -15,7 +15,6 @@ use Duyler\DI\ContainerInterface as DuylerContainerInterface;
 use Duyler\EventBus\Build\SharedService;
 use Duyler\EventBus\BusBuilder as EventBusBuilder;
 use Duyler\EventBus\BusConfig as EventBusConfig;
-use Duyler\EventBus\BusInterface;
 use LogicException;
 use Psr\Container\ContainerInterface;
 
@@ -96,11 +95,6 @@ final class ApplicationBuilder
         ));
 
         return new BusBuilder($this->busBuilder, $this->container);
-    }
-
-    public function build(): BusInterface
-    {
-        return $this->busBuilder->build();
     }
 
     /** @return Container */
