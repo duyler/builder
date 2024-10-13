@@ -45,7 +45,7 @@ final class Action
     public static function create(null|string|UnitEnum $id = null): self
     {
         $action = new self(static::$builder);
-        $action->id = $id ?? 'anonymous@' . rand() . microtime(true);
+        $action->id = $id ?? 'anonymous@' . spl_object_hash($action);
         $action->handler = function () {};
 
         self::$builder->addAction($action);
