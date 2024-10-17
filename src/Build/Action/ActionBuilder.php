@@ -74,6 +74,15 @@ class ActionBuilder implements BuilderInterface
                 );
             }
 
+            foreach ($action->get('triggeredOn') as $trigger) {
+                $this->busBuilder->addTrigger(
+                    new Trigger(
+                        $trigger,
+                        $action->get('id'),
+                    ),
+                );
+            }
+
             $this->busBuilder->addAction($busAction);
         }
 

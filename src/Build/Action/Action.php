@@ -15,6 +15,7 @@ final class Action
     private string | Closure $handler;
     private array $require = [];
     private array $triggerFor = [];
+    private array $triggeredOn = [];
     private array $config = [];
     private array $alternates = [];
     private ?string $argument = null;
@@ -74,6 +75,12 @@ final class Action
     public function triggerFor(string|UnitEnum ...$actionId): self
     {
         $this->triggerFor = $actionId;
+        return $this;
+    }
+
+    public function triggeredOn(string|UnitEnum ...$actionId): self
+    {
+        $this->triggeredOn = $actionId;
         return $this;
     }
 
