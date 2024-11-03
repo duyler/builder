@@ -54,7 +54,6 @@ class ActionBuilder implements BuilderInterface
                 alternates: $action->get('alternates'),
                 retries: $action->get('retries'),
                 labels: $action->get('labels'),
-                flush: $action->get('flush'),
             );
 
             /** @var AttributeInterface $attribute */

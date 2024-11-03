@@ -30,7 +30,6 @@ final class Action
     private bool $private = false;
     private array $sealed = [];
     private bool $silent = false;
-    private bool $flush = false;
 
     /** @var array<string|int, mixed> */
     private array $labels = [];
@@ -171,12 +170,6 @@ final class Action
     public function attributes(AttributeInterface ...$attributes): self
     {
         $this->attributes = $attributes;
-        return $this;
-    }
-
-    public function flush(bool $flush = true): self
-    {
-        $this->flush = $flush;
         return $this;
     }
 
