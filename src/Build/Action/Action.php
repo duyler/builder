@@ -27,7 +27,7 @@ final class Action
     private bool $repeatable = false;
     private bool $lock = true;
     private int $retries = 0;
-    private null|DateInterval $retryDelay;
+    private null|DateInterval $retryDelay = null;
     private array $listen = [];
     private bool $private = false;
     private array $sealed = [];
