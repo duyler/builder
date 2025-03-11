@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Duyler\Builder\Build\Action;
 
 use Closure;
+use DateInterval;
 use Duyler\Builder\Build\AttributeInterface;
 use UnitEnum;
 
@@ -26,6 +27,7 @@ final class Action
     private bool $repeatable = false;
     private bool $lock = true;
     private int $retries = 0;
+    private null|DateInterval $retryDelay;
     private array $listen = [];
     private bool $private = false;
     private array $sealed = [];
@@ -89,9 +91,10 @@ final class Action
         return $this;
     }
 
-    public function retries(int $retries): self
+    public function retries(int $retries, ?DateInterval $retryDelay = null): self
     {
         $this->retries = $retries;
+        $this->retryDelay = $retryDelay;
         return $this;
     }
 

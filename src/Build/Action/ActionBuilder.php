@@ -53,6 +53,7 @@ class ActionBuilder implements BuilderInterface
                 silent: $action->get('silent'),
                 alternates: $action->get('alternates'),
                 retries: $action->get('retries'),
+                retryDelay: $action->get('retryDelay'),
                 labels: $action->get('labels'),
             );
 
