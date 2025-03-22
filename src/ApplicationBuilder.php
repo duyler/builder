@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Duyler\Builder;
 
-use Dotenv\Dotenv;
 use Duyler\Builder\Config\BusConfig;
 use Duyler\Builder\Loader\ApplicationLoaderInterface;
 use Duyler\Config\ConfigInterface;
@@ -15,7 +14,6 @@ use Duyler\DI\ContainerInterface as DuylerContainerInterface;
 use Duyler\EventBus\Build\SharedService;
 use Duyler\EventBus\BusBuilder as EventBusBuilder;
 use Duyler\EventBus\BusConfig as EventBusConfig;
-use LogicException;
 use Psr\Container\ContainerInterface;
 
 final class ApplicationBuilder
@@ -24,37 +22,19 @@ final class ApplicationBuilder
     private FileConfig $config;
     private ContainerConfig $containerConfig;
     private ContainerInterface $container;
-    private string $projectRootDir;
 
-    public function __construct(string $configDir = 'config')
+    public function __construct(string $configDir = 'config', string $rootFile = 'docker-compose.yml')
     {
-        $dir = dirname('__DIR__') . '/';
-
-        while (!is_file($dir . '/composer.json')) {
-            if (is_dir(realpath($dir))) {
-                $dir = $dir . '../';
-            }
-
-            if (false === realpath($dir)) {
-                throw new LogicException('Cannot auto-detect project dir');
-            }
-        }
-
-        $this->projectRootDir = $dir;
-
         $this->containerConfig = new ContainerConfig();
         $this->containerConfig->withBind([
             ApplicationLoaderInterface::class => ApplicationLoader::class,
         ]);
 
-        $env = Dotenv::createImmutable($this->projectRootDir);
-
         $configCollector = new ConfigCollector($this->containerConfig);
 
         $this->config = new FileConfig(
-            configDir: $this->projectRootDir . $configDir,
-            env: $env->safeLoad() + $_ENV,
-            root: $this->projectRootDir,
+            configDir: $configDir,
+            rootFile: $rootFile,
             externalConfigCollector: $configCollector,
         );
 
