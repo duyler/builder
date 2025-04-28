@@ -21,7 +21,7 @@ final class Action
     private array $alternates = [];
     private ?string $argument = null;
     private null | string | Closure $argumentFactory = null;
-    private ?string $contract = null;
+    private ?string $type = null;
     private null | string | Closure $rollback = null;
     private bool $externalAccess = true;
     private bool $repeatable = false;
@@ -38,6 +38,7 @@ final class Action
 
     /** @var AttributeInterface[] */
     private array $attributes = [];
+    private bool $immutable = true;
 
     public function __construct(ActionBuilder $builder)
     {
@@ -110,10 +111,15 @@ final class Action
         return $this;
     }
 
-    public function contract(string $contract): self
+    public function type(string $type): self
     {
-        $this->contract = $contract;
+        $this->type = $type;
         return $this;
+    }
+
+    public function immutable(bool $immutable): self
+    {
+        $this->immutable = $immutable;
     }
 
     public function rollback(string|Closure $rollback): self
