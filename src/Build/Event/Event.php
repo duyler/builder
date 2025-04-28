@@ -7,7 +7,7 @@ namespace Duyler\Builder\Build\Event;
 use Duyler\EventBus\BusBuilder;
 use UnitEnum;
 
-class Event
+final class Event
 {
     private static BusBuilder $busBuilder;
 
@@ -18,12 +18,14 @@ class Event
 
     public static function add(
         string|UnitEnum $id,
-        ?string $contract = null,
+        ?string $type = null,
+        bool $immutable = true,
     ): void {
         self::$busBuilder->addEvent(
             new \Duyler\EventBus\Build\Event(
                 id: $id,
-                contract: $contract,
+                type: $type,
+                immutable: $immutable,
             ),
         );
     }
