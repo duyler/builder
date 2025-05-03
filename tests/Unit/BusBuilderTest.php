@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Duyler\Builder\Test\Unit;
 
 use Duyler\Builder\BusBuilder;
-use Duyler\Builder\Config\PackagesConfig;
 use Duyler\DI\ContainerInterface;
 use Duyler\EventBus\Build\Action;
 use Duyler\EventBus\Build\Context;
@@ -144,34 +143,6 @@ class BusBuilderTest extends TestCase
         $result = $this->busBuilder->addTrigger($trigger);
         $this->assertSame($this->busBuilder, $result);
     }
-
-    //#[Test]
-    //public function should_load_packages(): void
-    //{
-    //    $packageLoader = $this->createMock(\Duyler\Builder\Loader\PackageLoaderInterface::class);
-    //    $attributeHandlerCollection = $this->createMock(\Duyler\Builder\Build\AttributeHandlerCollection::class);
-    //    $builderCollection = $this->createMock(\Duyler\Builder\Build\BuilderCollection::class);
-    //
-    //    $this->container->expects($this->exactly(3))
-    //        ->method('get')
-    //        ->willReturnCallback(function ($class) use ($packageLoader, $attributeHandlerCollection, $builderCollection) {
-    //            return match ($class) {
-    //                PackagesConfig::class => $this->packagesConfig,
-    //                \Duyler\Builder\Build\AttributeHandlerCollection::class => $attributeHandlerCollection,
-    //                \Duyler\Builder\Build\BuilderCollection::class => $builderCollection,
-    //                'TestPackageLoader' => $packageLoader,
-    //                default => null,
-    //            };
-    //        });
-    //
-    //    $packageLoader->expects($this->once())
-    //        ->method('load')
-    //        ->with($this->isInstanceOf(\Duyler\Builder\Loader\LoaderService::class));
-    //
-    //    $buildLoader = $this->busBuilder->loadPackages();
-    //
-    //    $this->assertInstanceOf(\Duyler\Builder\BuildLoader::class, $buildLoader);
-    //}
 
     #[Test]
     public function should_build_bus(): void

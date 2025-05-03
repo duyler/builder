@@ -32,34 +32,6 @@ class PackageLoaderTest extends TestCase
         $this->packagesConfig = new PackagesConfig(['TestPackageLoader']);
     }
 
-    //#[Test]
-    //public function should_load_packages(): void
-    //{
-    //    $packageLoader = $this->createMock(PackageLoaderInterface::class);
-    //    $attributeHandlerCollection = $this->createMock(AttributeHandlerCollection::class);
-    //    $builderCollection = $this->createMock(BuilderCollection::class);
-    //
-    //    $this->container->expects($this->exactly(3))
-    //        ->method('get')
-    //        ->willReturnCallback(function ($class) use ($packageLoader, $attributeHandlerCollection, $builderCollection) {
-    //            return match ($class) {
-    //                PackagesConfig::class => $this->packagesConfig,
-    //                AttributeHandlerCollection::class => $attributeHandlerCollection,
-    //                BuilderCollection::class => $builderCollection,
-    //                'TestPackageLoader' => $packageLoader,
-    //                default => null,
-    //            };
-    //        });
-    //
-    //    $packageLoader->expects($this->once())
-    //        ->method('load')
-    //        ->with($this->isInstanceOf(LoaderService::class));
-    //
-    //    $buildLoader = $this->packageLoader->loadPackages();
-    //
-    //    $this->assertInstanceOf(\Duyler\Builder\BuildLoader::class, $buildLoader);
-    //}
-
     #[Test]
     public function should_build_bus(): void
     {
