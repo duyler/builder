@@ -80,4 +80,4 @@ class ConfigCollectorTest extends TestCase
         $classMap = $this->containerConfig->getClassMap();
         $this->assertArrayNotHasKey($interface, $classMap);
     }
-} 
+}

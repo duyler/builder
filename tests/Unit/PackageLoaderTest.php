@@ -101,4 +101,4 @@ class PackageLoaderTest extends TestCase
 
         $this->assertInstanceOf(\Duyler\Builder\BuildLoader::class, $buildLoader);
     }
-} 
+}

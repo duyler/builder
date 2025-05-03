@@ -18,6 +18,7 @@ use Duyler\EventBus\Contract\State\StateHandlerInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
+use stdClass;
 
 class BusBuilderTest extends TestCase
 {
@@ -36,7 +37,7 @@ class BusBuilderTest extends TestCase
     #[Test]
     public function should_add_shared_service(): void
     {
-        $service = new \stdClass();
+        $service = new stdClass();
         $bind = ['TestInterface' => 'TestImplementation'];
         $providers = ['TestProvider'];
 
@@ -99,7 +100,7 @@ class BusBuilderTest extends TestCase
             id: 'TestAction',
             handler: function () {},
             required: ['RequiredAction'],
-            type: null
+            type: null,
         );
 
         $this->eventBusBuilder->expects($this->once())
@@ -117,7 +118,7 @@ class BusBuilderTest extends TestCase
             id: 'TestAction',
             handler: function () {},
             required: ['RequiredAction'],
-            type: null
+            type: null,
         );
 
         $this->eventBusBuilder->expects($this->once())
@@ -133,7 +134,7 @@ class BusBuilderTest extends TestCase
     {
         $trigger = new Trigger(
             'TestAction',
-            'TestEvent'
+            'TestEvent',
         );
 
         $this->eventBusBuilder->expects($this->once())
@@ -185,4 +186,4 @@ class BusBuilderTest extends TestCase
 
         $this->assertSame($bus, $result);
     }
-} 
+}
