@@ -20,6 +20,7 @@ final class Action
     private array $config = [];
     private array $alternates = [];
     private ?string $argument = null;
+    private ?string $argumentCollection = null;
     private null | string | Closure $argumentFactory = null;
     private ?string $type = null;
     private ?string $typeCollection = null;
@@ -102,9 +103,10 @@ final class Action
         return $this;
     }
 
-    public function argument(string $argument): self
+    public function argument(string $argument, ?string $argumentCollection = null): self
     {
         $this->argument = $argument;
+        $this->argumentCollection = $argumentCollection;
         return $this;
     }
 
