@@ -44,6 +44,7 @@ class ActionBuilder implements BuilderInterface
                 argument: $action->get('argument'),
                 argumentFactory: $action->get('argumentFactory'),
                 type: $action->get('type'),
+                typeCollection: $action->get('typeCollection'),
                 immutable: $action->get('immutable'),
                 rollback: $action->get('rollback'),
                 externalAccess: $action->get('externalAccess'),

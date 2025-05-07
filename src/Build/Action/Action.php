@@ -22,6 +22,7 @@ final class Action
     private ?string $argument = null;
     private null | string | Closure $argumentFactory = null;
     private ?string $type = null;
+    private ?string $typeCollection = null;
     private null | string | Closure $rollback = null;
     private bool $externalAccess = true;
     private bool $repeatable = false;
@@ -39,17 +40,19 @@ final class Action
     /** @var AttributeInterface[] */
     private array $attributes = [];
     private bool $immutable = true;
+    private static Closure $defaultHandler;
 
     public function __construct(ActionBuilder $builder)
     {
         static::$builder = $builder;
+        static::$defaultHandler = function () {};
     }
 
     public static function create(null|string|UnitEnum $id = null): self
     {
         $action = new self(static::$builder);
         $action->id = $id ?? 'anonymous@' . spl_object_hash($action);
-        $action->handler = function () {};
+        $action->handler = static::$defaultHandler;
 
         self::$builder->addAction($action);
 
@@ -111,9 +114,10 @@ final class Action
         return $this;
     }
 
-    public function type(string $type): self
+    public function type(string $type, ?string $typeCollection = null): self
     {
         $this->type = $type;
+        $this->typeCollection = $typeCollection;
         return $this;
     }
 
