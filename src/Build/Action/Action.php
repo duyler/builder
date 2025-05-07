@@ -105,7 +105,7 @@ final class Action
 
     public function argument(string $argument, ?string $argumentCollection = null): self
     {
-        $this->argument = $argument;
+        $this->argument = $argumentCollection ?? $argument;
         $this->argumentCollection = $argumentCollection;
         return $this;
     }
