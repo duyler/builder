@@ -126,6 +126,7 @@ final class Action
     public function immutable(bool $immutable): self
     {
         $this->immutable = $immutable;
+        return $this;
     }
 
     public function rollback(string|Closure $rollback): self
