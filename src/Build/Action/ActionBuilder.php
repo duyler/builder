@@ -43,6 +43,7 @@ class ActionBuilder implements BuilderInterface
                 definitions: $actionConfig->definitions,
                 argument: $action->get('argument'),
                 argumentFactory: $action->get('argumentFactory'),
+                context: $action->get('context'),
                 type: $action->get('type'),
                 typeCollection: $action->get('typeCollection'),
                 immutable: $action->get('immutable'),

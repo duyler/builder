@@ -20,6 +20,7 @@ final class Action
     private array $config = [];
     private array $alternates = [];
     private ?string $argument = null;
+    private ?string $context = null;
     private ?string $argumentCollection = null;
     private null | string | Closure $argumentFactory = null;
     private ?string $type = null;
@@ -113,6 +114,12 @@ final class Action
     public function argumentFactory(string| Closure $argumentFactory): self
     {
         $this->argumentFactory = $argumentFactory;
+        return $this;
+    }
+
+    public function context(string $context): self
+    {
+        $this->context = $context;
         return $this;
     }
 
