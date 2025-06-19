@@ -9,6 +9,7 @@ use Duyler\EventBus\BusBuilder;
 use Duyler\Builder\Build\AttributeHandlerCollection;
 use Duyler\Builder\Build\AttributeInterface;
 use Duyler\Builder\Build\BuilderInterface;
+use Duyler\EventBus\Enum\ResultStatus;
 
 class ActionBuilder implements BuilderInterface
 {
@@ -68,11 +69,22 @@ class ActionBuilder implements BuilderInterface
                 }
             }
 
-            foreach ($action->get('triggerFor') as $trigger) {
+            foreach ($action->get('onSuccess') as $trigger) {
                 $this->busBuilder->addTrigger(
                     new Trigger(
                         $action->get('id'),
                         $trigger,
+                        ResultStatus::Success,
+                    ),
+                );
+            }
+
+            foreach ($action->get('onFail') as $trigger) {
+                $this->busBuilder->addTrigger(
+                    new Trigger(
+                        $action->get('id'),
+                        $trigger,
+                        ResultStatus::Fail,
                     ),
                 );
             }
