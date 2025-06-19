@@ -16,7 +16,7 @@ final class Event
         static::$busBuilder = $busBuilder;
     }
 
-    public static function add(
+    public static function declare(
         string|UnitEnum $id,
         ?string $type = null,
         bool $immutable = true,

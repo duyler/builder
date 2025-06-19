@@ -33,7 +33,7 @@ use Duyler\Web\Build\Attribute\Route;
 use Duyler\Web\Build\Attribute\View;
 use Duyler\Web\Enum\HttpMethod;
 
-Action::create()
+Action::declare()
     ->attributes(
         new Route(
             method: HttpMethod::Get,

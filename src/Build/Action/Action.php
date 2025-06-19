@@ -15,7 +15,8 @@ final class Action
     private string|UnitEnum $id;
     private string | Closure $handler;
     private array $require = [];
-    private array $triggerFor = [];
+    private array $onSuccess = [];
+    private array $onFail = [];
     private array $triggeredOn = [];
     private array $config = [];
     private array $alternates = [];
@@ -50,7 +51,7 @@ final class Action
         static::$defaultHandler = function () {};
     }
 
-    public static function create(null|string|UnitEnum $id = null): self
+    public static function declare(null|string|UnitEnum $id = null): self
     {
         $action = new self(static::$builder);
         $action->id = $id ?? 'anonymous@' . spl_object_hash($action);
@@ -79,9 +80,15 @@ final class Action
         return $this;
     }
 
-    public function triggerFor(string|UnitEnum ...$actionId): self
+    public function onSuccess(string|UnitEnum ...$actionId): self
     {
-        $this->triggerFor = $actionId;
+        $this->onSuccess = $actionId;
+        return $this;
+    }
+
+    public function onFail(string|UnitEnum ...$actionId): self
+    {
+        $this->onFail = $actionId;
         return $this;
     }
 
