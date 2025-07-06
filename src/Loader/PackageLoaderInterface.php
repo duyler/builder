@@ -6,5 +6,7 @@ namespace Duyler\Builder\Loader;
 
 interface PackageLoaderInterface
 {
-    public function load(LoaderServiceInterface $loaderService): void;
+    public function beforeLoadBuild(LoaderServiceInterface $loaderService): void;
+
+    public function afterLoadBuild(LoaderServiceInterface $loaderService): void;
 }

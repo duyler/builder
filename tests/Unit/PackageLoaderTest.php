@@ -13,8 +13,8 @@ use Duyler\Builder\PackageLoader;
 use Duyler\DI\ContainerInterface;
 use Duyler\EventBus\BusBuilder as EventBusBuilder;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 
 class PackageLoaderTest extends TestCase
 {
@@ -66,7 +66,7 @@ class PackageLoaderTest extends TestCase
             });
 
         $packageLoader->expects($this->once())
-            ->method('load')
+            ->method('beforeLoadBuild')
             ->with($this->isInstanceOf(LoaderService::class));
 
         $buildLoader = $this->packageLoader->loadPackages($customConfig);

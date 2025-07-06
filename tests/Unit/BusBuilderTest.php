@@ -15,8 +15,8 @@ use Duyler\EventBus\BusBuilder as EventBusBuilder;
 use Duyler\EventBus\BusInterface;
 use Duyler\EventBus\Contract\State\StateHandlerInterface;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 use stdClass;
 
 class BusBuilderTest extends TestCase

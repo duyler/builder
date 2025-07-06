@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Duyler\Builder\Build\Service;
 
-use Duyler\EventBus\Build\SharedService;
 use Duyler\DI\ContainerInterface;
+use Duyler\EventBus\Build\SharedService;
 use Duyler\EventBus\BusBuilder;
 
 final class Service
