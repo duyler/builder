@@ -7,6 +7,7 @@ namespace Duyler\Builder\Build\Action;
 use Closure;
 use DateInterval;
 use Duyler\Builder\Build\AttributeInterface;
+use Duyler\EventBus\Build\Type;
 use UnitEnum;
 
 final class Action
@@ -15,6 +16,7 @@ final class Action
     private string|UnitEnum $id;
     private string | Closure $handler;
     private array $require = [];
+    private array $dependsOn = [];
     private array $onSuccess = [];
     private array $onFail = [];
     private array $triggeredOn = [];
@@ -71,6 +73,12 @@ final class Action
     public function require(string|UnitEnum ...$actionId): self
     {
         $this->require = $actionId;
+        return $this;
+    }
+
+    public function dependsOn(Type ...$type): self
+    {
+        $this->dependsOn = $type;
         return $this;
     }
 

@@ -7,13 +7,13 @@ namespace Duyler\Builder;
 use Duyler\Builder\Config\PackagesConfig;
 use Duyler\DI\ContainerInterface;
 use Duyler\EventBus\Build\Action;
-use Duyler\EventBus\Build\Event;
-use Duyler\EventBus\Build\Trigger;
 use Duyler\EventBus\Build\Context;
+use Duyler\EventBus\Build\Event;
 use Duyler\EventBus\Build\SharedService;
+use Duyler\EventBus\Build\Trigger;
+use Duyler\EventBus\BusBuilder as EventBusBuilder;
 use Duyler\EventBus\BusInterface;
 use Duyler\EventBus\Contract\State\StateHandlerInterface;
-use Duyler\EventBus\BusBuilder as EventBusBuilder;
 
 final class BusBuilder
 {

@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Duyler\Builder\Build\Action;
 
-use Duyler\EventBus\Build\Trigger;
-use Duyler\EventBus\BusBuilder;
 use Duyler\Builder\Build\AttributeHandlerCollection;
 use Duyler\Builder\Build\AttributeInterface;
 use Duyler\Builder\Build\BuilderInterface;
+use Duyler\EventBus\Build\Trigger;
+use Duyler\EventBus\BusBuilder;
 use Duyler\EventBus\Enum\ResultStatus;
 
 class ActionBuilder implements BuilderInterface
@@ -38,6 +38,7 @@ class ActionBuilder implements BuilderInterface
                 id: $action->get('id'),
                 handler: $action->get('handler'),
                 required: $action->get('require'),
+                dependsOn: $action->get('dependsOn'),
                 listen: $action->get('listen'),
                 bind: $actionConfig->bind,
                 providers: $actionConfig->providers,

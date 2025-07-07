@@ -40,8 +40,10 @@ final class PackageLoader
         foreach ($packagesConfig->packages as $loaderClass) {
             /** @var PackageLoaderInterface $packageLoader */
             $packageLoader = $this->container->get($loaderClass);
-            $packageLoader->load($loaderService);
+            $packageLoader->beforeLoadBuild($loaderService);
         }
+
+        $this->container->set($packagesConfig);
 
         return new BuildLoader($this->busBuilder, $this->container);
     }

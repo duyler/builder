@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Duyler\Builder;
 
 use Duyler\Config\ConfigCollectorInterface;
-use Duyler\DI\Definition;
 use Duyler\DI\ContainerConfig;
+use Duyler\DI\Definition;
 use Duyler\DI\Provider\ProviderInterface;
 use Override;
 

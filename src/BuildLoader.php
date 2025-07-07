@@ -14,6 +14,9 @@ use Duyler\Builder\Build\State\StateContext;
 use Duyler\Builder\Build\State\StateHandler;
 use Duyler\Builder\Build\Trigger\Trigger;
 use Duyler\Builder\Config\BuildConfig;
+use Duyler\Builder\Config\PackagesConfig;
+use Duyler\Builder\Loader\LoaderService;
+use Duyler\Builder\Loader\PackageLoaderInterface;
 use Duyler\Config\ConfigInterface;
 use Duyler\DI\ContainerInterface;
 use Duyler\EventBus\BusBuilder as EventBusBuilder;
@@ -86,7 +89,33 @@ final class BuildLoader
             $builder->build($attributeHandlerCollection);
         }
 
+        $this->afterLoadBuild();
+
         return $this;
+    }
+
+    private function afterLoadBuild(): void
+    {
+        /** @var PackagesConfig $packagesConfig */
+        $packagesConfig = $this->container->get(PackagesConfig::class);
+
+        /** @var AttributeHandlerCollection $attributeHandlerCollection */
+        $attributeHandlerCollection = $this->container->get(AttributeHandlerCollection::class);
+
+        /** @var BuilderCollection $builderCollection */
+        $builderCollection = $this->container->get(BuilderCollection::class);
+
+        $loaderService = new LoaderService(
+            $this->busBuilder,
+            $attributeHandlerCollection,
+            $builderCollection,
+        );
+
+        foreach ($packagesConfig->packages as $loaderClass) {
+            /** @var PackageLoaderInterface $packageLoader */
+            $packageLoader = $this->container->get($loaderClass);
+            $packageLoader->afterLoadBuild($loaderService);
+        }
     }
 
     public function build(): BusInterface

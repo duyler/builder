@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Duyler\Builder\Loader;
 
+use Duyler\Builder\Build\AttributeHandlerCollection;
+use Duyler\Builder\Build\AttributeHandlerInterface;
+use Duyler\Builder\Build\BuilderCollection;
+use Duyler\Builder\Build\BuilderInterface;
 use Duyler\EventBus\Build\Action;
 use Duyler\EventBus\Build\Context;
 use Duyler\EventBus\Build\Event;
@@ -11,10 +15,7 @@ use Duyler\EventBus\Build\SharedService;
 use Duyler\EventBus\Build\Trigger;
 use Duyler\EventBus\BusBuilder;
 use Duyler\EventBus\Contract\State\StateHandlerInterface;
-use Duyler\Builder\Build\AttributeHandlerCollection;
-use Duyler\Builder\Build\AttributeHandlerInterface;
-use Duyler\Builder\Build\BuilderCollection;
-use Duyler\Builder\Build\BuilderInterface;
+use UnitEnum;
 
 final readonly class LoaderService implements LoaderServiceInterface
 {
@@ -23,6 +24,11 @@ final readonly class LoaderService implements LoaderServiceInterface
         private AttributeHandlerCollection $attributeHandlerCollection,
         private BuilderCollection $builderCollection,
     ) {}
+
+    public function actionIsExists(string|UnitEnum $actionId): bool
+    {
+        return $this->busBuilder->actionIsExists($actionId);
+    }
 
     public function addAction(Action $action): self
     {
@@ -76,5 +82,10 @@ final readonly class LoaderService implements LoaderServiceInterface
     {
         $this->busBuilder->addEvent($event);
         return $this;
+    }
+
+    public function eventIsExists(string|UnitEnum $eventId): bool
+    {
+        return  $this->busBuilder->eventIsExists($eventId);
     }
 }
