@@ -15,6 +15,7 @@ final class Action
     private static ActionBuilder $builder;
     private string|UnitEnum $id;
     private string | Closure $handler;
+    private ?string $description = null;
     private array $require = [];
     private array $dependsOn = [];
     private array $onSuccess = [];
@@ -67,6 +68,12 @@ final class Action
     public function handler(string|Closure $handler): self
     {
         $this->handler = $handler;
+        return $this;
+    }
+
+    public function description(string $description): self
+    {
+        $this->description = $description;
         return $this;
     }
 

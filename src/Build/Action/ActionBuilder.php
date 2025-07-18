@@ -37,6 +37,7 @@ class ActionBuilder implements BuilderInterface
             $busAction = new \Duyler\EventBus\Build\Action(
                 id: $action->get('id'),
                 handler: $action->get('handler'),
+                description: $action->get('description'),
                 required: $action->get('require'),
                 dependsOn: $action->get('dependsOn'),
                 listen: $action->get('listen'),
